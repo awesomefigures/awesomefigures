@@ -1,0 +1,35 @@
+name: Conda environment smoke test
+
+# Conda dependency solving and Sphinx rendering are intentionally manual.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  conda:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create environment from environment.yml
+        uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-file: environment.yml
+          environment-name: awesomefigures
+          init-shell: bash
+          cache-environment: true
+
+      - name: Validate installed package and run tests
+        shell: micromamba-shell {0}
+        run: |
+          python -m pip check
+          python -c "import awesomefigures as af; print(af.__version__); assert 'elegante' in af.available_styles()"
+          python -m pytest -q
+
+      - name: Verify the Sphinx documentation build
+        shell: micromamba-shell {0}
+        env:
+          AWESOMEFIGURES_NB_EXECUTION: "off"
+        run: sphinx-build -W -b html docs/source docs/_build/html

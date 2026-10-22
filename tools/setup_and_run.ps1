@@ -90,8 +90,8 @@ try {
         )
     }
 
-    # Single source of truth: requirements.txt uses pyproject.toml extras.
-    Invoke-InEnvironment -Arguments @("-m", "pip", "install", "-r", "requirements.txt")
+    # environment.yml already installs the editable package and the
+    # dev/docs/notebooks extras from pyproject.toml: no second pip install.
     Invoke-InEnvironment -Arguments @("-m", "pip", "check")
     Invoke-InEnvironment -Arguments @("-c",
         "import awesomefigures as af; print('awesomefigures', af.__version__)")
