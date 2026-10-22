@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
 import pytest
-import contrastcolors as cc
+import awesomefigures as cc
 
 
 def teardown_function():
