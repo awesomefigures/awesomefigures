@@ -1,13 +1,12 @@
 """Distribution package and Python import checks for awesomefigures."""
 from pathlib import Path
-import tomllib
+from importlib.metadata import metadata
 import awesomefigures as af
 
 ROOT = Path(__file__).resolve().parents[1]
 
 def test_new_distribution_metadata_matches_import():
-    project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
-    assert project["project"]["name"] == "awesomefigures"
+    assert metadata("awesomefigures")["Name"] == "awesomefigures"
     assert (ROOT / "src" / "awesomefigures" / "__init__.py").exists()
     assert not (ROOT / "src" / "contrastcolors").exists()
     assert af.available_styles()
