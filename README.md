@@ -112,6 +112,52 @@ padding, zero inclusion and the minimum marker distance using
 See the rendered [Styles guide](https://heri-espino.github.io/Colors/style.html)
 for comparisons and technical limitations.
 
+## Conda environment (Windows, macOS, and Linux)
+
+The repository includes `environment.yml` for the **complete
+AwesomeFigures development environment**. It uses `conda-forge` for
+Python 3.12, NumPy, Matplotlib and Colorspacious, then installs
+`awesomefigures` in editable mode with its test, documentation and
+notebook extras from `pyproject.toml`.
+
+From the **repository root** (important for the relative editable install):
+
+```bash
+git clone https://github.com/heri-espino/Colors.git
+cd Colors
+conda env create -f environment.yml
+conda activate awesomefigures
+python -m pip check
+python -c "import awesomefigures as af; print(af.__version__)"
+pytest
+```
+
+If the environment already exists, update it instead of creating a second one:
+
+```bash
+conda env update -n awesomefigures -f environment.yml --prune
+conda activate awesomefigures
+```
+
+The environment also contains Sphinx and JupyterLab:
+
+```bash
+sphinx-build -W -b html docs/source docs/_build/html
+jupyter lab
+```
+
+**Using AwesomeFigures in a different Conda project:** activate that project's
+environment and install this checkout with
+`python -m pip install -e /path/to/Colors`. Alternatively, install a
+pinned Git commit with
+`python -m pip install "awesomefigures @ git+https://github.com/heri-espino/Colors.git@<commit-sha>"`.
+This does not require changing the other project's Conda environment name.
+When distributing another library, declare `awesomefigures` as a dependency
+after it has been published to PyPI.
+
+The Conda YAML targets local development, not a cross-platform lockfile.
+It does **not** publish anything to PyPI or run notebook generation automatically.
+
 ## Windows: run the entire project with Conda
 
 Install [Miniforge](https://github.com/conda-forge/miniforge) or Miniconda,
