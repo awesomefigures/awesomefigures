@@ -7,15 +7,15 @@ helpers intended for advanced use.
 High-level palette API
 ----------------------
 
-.. autofunction:: contrastcolors.color_palette
+.. autofunction:: awesomefigures.color_palette
 
-.. autofunction:: contrastcolors.contrast_palette
+.. autofunction:: awesomefigures.contrast_palette
 
-.. autofunction:: contrastcolors.show_palette
+.. autofunction:: awesomefigures.show_palette
 
-.. autofunction:: contrastcolors.plot_scheme
+.. autofunction:: awesomefigures.plot_scheme
 
-.. autofunction:: contrastcolors.scatter_scheme
+.. autofunction:: awesomefigures.scatter_scheme
 
 DEFAULT_MARKERS
     Default marker sequence used by plot_scheme.
@@ -29,28 +29,28 @@ Accessibility and print previews
 DEFAULT_ACCESSIBILITY_MODES
     Original, grayscale, print-stress, deuteranopia, protanopia, tritanopia.
 
-.. autofunction:: contrastcolors.figure_to_rgba
+.. autofunction:: awesomefigures.figure_to_rgba
 
-.. autofunction:: contrastcolors.to_grayscale_image
+.. autofunction:: awesomefigures.to_grayscale_image
 
-.. autofunction:: contrastcolors.to_print_stress_image
+.. autofunction:: awesomefigures.to_print_stress_image
 
-.. autofunction:: contrastcolors.simulate_cvd_image
+.. autofunction:: awesomefigures.simulate_cvd_image
 
-.. autofunction:: contrastcolors.simulate_figure
+.. autofunction:: awesomefigures.simulate_figure
 
-.. autofunction:: contrastcolors.figure_variants
+.. autofunction:: awesomefigures.figure_variants
 
-.. autofunction:: contrastcolors.show_vector_accessibility_panel
+.. autofunction:: awesomefigures.show_vector_accessibility_panel
 
 For standard line and scatter plots, this function redraws vector artists
 per viewing mode instead of rasterizing the original graphic. Export its
 Matplotlib figure as PDF or PGF; PGF can be included in the manuscript for
 the exact document font. Unsupported artist types raise explicitly.
 
-.. autofunction:: contrastcolors.show_accessibility_panel
+.. autofunction:: awesomefigures.show_accessibility_panel
 
-.. autofunction:: contrastcolors.save_accessibility_panel
+.. autofunction:: awesomefigures.save_accessibility_panel
 
 Preinstalled historical palettes and colormaps
 ----------------------------------------------
@@ -60,23 +60,23 @@ values; their contrast ratios are not rebuilt by the OKLCH solver.
 Continuous maps use Matplotlib's original colormap implementations.
 The two systems can be selected from high-level plotting helpers.
 
-.. autoclass:: contrastcolors.NamedPalette
+.. autoclass:: awesomefigures.NamedPalette
    :members:
 
-.. autofunction:: contrastcolors.available_named_palettes
+.. autofunction:: awesomefigures.available_named_palettes
 
-.. autofunction:: contrastcolors.get_named_palette
+.. autofunction:: awesomefigures.get_named_palette
 
-.. autofunction:: contrastcolors.named_palette
+.. autofunction:: awesomefigures.named_palette
 
-.. autofunction:: contrastcolors.named_colormap
+.. autofunction:: awesomefigures.named_colormap
 
 .. code-block:: python
 
-   cc.color_palette("okabe-ito", as_hex=True)
-   cc.plot_scheme("tol-bright", n=5)
-   cc.set_style("elegante", palette="brewer-dark2")
-   ax.imshow(values, cmap=cc.named_colormap("cividis"))
+   af.color_palette("okabe-ito", as_hex=True)
+   af.plot_scheme("tol-bright", n=5)
+   af.set_style("elegante", palette="brewer-dark2")
+   ax.imshow(values, cmap=af.named_colormap("cividis"))
 
 See :doc:`named_palettes` for full visual examples, exact HEX sets and
 source attribution.
@@ -87,22 +87,22 @@ User-defined palette presets
 Presets register palettes for the current Python process. Put the registration
 in a project module, then import it in each script that needs those names.
 
-.. autofunction:: contrastcolors.register_palette
+.. autofunction:: awesomefigures.register_palette
 
-.. autofunction:: contrastcolors.get_palette
+.. autofunction:: awesomefigures.get_palette
 
-.. autofunction:: contrastcolors.available_palettes
+.. autofunction:: awesomefigures.available_palettes
 
-.. autoclass:: contrastcolors.PalettePreset
+.. autoclass:: awesomefigures.PalettePreset
    :members:
 
 Example:
 
 .. code-block:: python
 
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   cc.register_palette(
+   af.register_palette(
        "paper_palette",
        hues=[55, 20, 145, 210, 290],
        ratio=1.25,
@@ -110,71 +110,71 @@ Example:
        markers=["o", "s", "^", "D", "X"],
        linestyles=["-", "--", ":", "-.", (0, (5, 2))],
    )
-   colors = cc.color_palette("paper_palette")
-   scheme = cc.plot_scheme("paper_palette")
+   colors = af.color_palette("paper_palette")
+   scheme = af.plot_scheme("paper_palette")
 
 Core palette objects
 --------------------
 
-.. autoclass:: contrastcolors.ColorCell
+.. autoclass:: awesomefigures.ColorCell
    :members:
 
-.. autoclass:: contrastcolors.RenderedColor
+.. autoclass:: awesomefigures.RenderedColor
    :members:
 
-.. autoclass:: contrastcolors.Palette
+.. autoclass:: awesomefigures.Palette
    :members:
    :special-members: __len__, __getitem__
 
-.. autoclass:: contrastcolors.ContrastGrid
+.. autoclass:: awesomefigures.ContrastGrid
    :members:
    :special-members: __getitem__
 
 Palette construction
 --------------------
 
-.. autofunction:: contrastcolors.color_for_luminance
+.. autofunction:: awesomefigures.color_for_luminance
 
-.. autofunction:: contrastcolors.contrast_grid
+.. autofunction:: awesomefigures.contrast_grid
 
 Contrast mathematics
 --------------------
 
-.. autofunction:: contrastcolors.luminance_ladder
+.. autofunction:: awesomefigures.luminance_ladder
 
-.. autofunction:: contrastcolors.luminance_contrast
+.. autofunction:: awesomefigures.luminance_contrast
 
-.. autofunction:: contrastcolors.relative_luminance
+.. autofunction:: awesomefigures.relative_luminance
 
-.. autofunction:: contrastcolors.contrast_ratio
+.. autofunction:: awesomefigures.contrast_ratio
 
 Alpha and compositing
 ---------------------
 
-.. autoclass:: contrastcolors.AlphaCompensation
+.. autoclass:: awesomefigures.AlphaCompensation
    :members:
 
-.. autofunction:: contrastcolors.composite
+.. autofunction:: awesomefigures.composite
 
-.. autofunction:: contrastcolors.compensate_alpha
+.. autofunction:: awesomefigures.compensate_alpha
 
-.. autofunction:: contrastcolors.minimum_alpha
+.. autofunction:: awesomefigures.minimum_alpha
 
 Color utilities
 ---------------
 
-.. autofunction:: contrastcolors.to_rgb
+.. autofunction:: awesomefigures.to_rgb
 
-.. autofunction:: contrastcolors.to_hex
+.. autofunction:: awesomefigures.to_hex
 
-.. autofunction:: contrastcolors.srgb_to_oklab
+.. autofunction:: awesomefigures.srgb_to_oklab
 
-.. autofunction:: contrastcolors.delta_e_ok
+.. autofunction:: awesomefigures.delta_e_ok
 
 Categorical pie charts
 ----------------------
 
-.. autofunction:: contrastcolors.pie_plot
+.. autofunction:: awesomefigures.pie_plot
 
 Pie wedges use white separators by default (with a user-overridable
 edgecolor/linewidth), plus the same adaptive color and luminance policy
@@ -183,9 +183,9 @@ as other categorical plots.
 Adaptive print-safe colors
 --------------------------
 
-.. autofunction:: contrastcolors.print_safe_luminances
+.. autofunction:: awesomefigures.print_safe_luminances
 
-The default contrastcolors.plot_scheme() and scatter_scheme() distribute
+The default awesomefigures.plot_scheme() and scatter_scheme() distribute
 luminances across a broad grayscale range when the number of series is
 small (and both the contrast ratio and starting luminance are omitted).
 Named presets and explicit contrast ratios are kept unchanged.
@@ -193,34 +193,34 @@ Named presets and explicit contrast ratios are kept unchanged.
 LaTeX layout and publication fitting
 ------------------------------------
 
-.. autoclass:: contrastcolors.LatexFontInfo
+.. autoclass:: awesomefigures.LatexFontInfo
    :members:
 
-.. autofunction:: contrastcolors.find_latex_font
+.. autofunction:: awesomefigures.find_latex_font
 
-.. autoclass:: contrastcolors.LatexLayout
+.. autoclass:: awesomefigures.LatexLayout
    :members:
 
-.. autoexception:: contrastcolors.LatexProbeError
+.. autoexception:: awesomefigures.LatexProbeError
 
-.. autoclass:: contrastcolors.PublicationStyle
+.. autoclass:: awesomefigures.PublicationStyle
    :members:
 
-.. autoclass:: contrastcolors.FigureAudit
+.. autoclass:: awesomefigures.FigureAudit
    :members:
 
-.. autoclass:: contrastcolors.FitResult
+.. autoclass:: awesomefigures.FitResult
    :members:
 
-.. autofunction:: contrastcolors.inspect_latex
+.. autofunction:: awesomefigures.inspect_latex
 
-.. autofunction:: contrastcolors.latex_style
+.. autofunction:: awesomefigures.latex_style
 
-.. autofunction:: contrastcolors.audit_figure
+.. autofunction:: awesomefigures.audit_figure
 
-.. autofunction:: contrastcolors.fit_figure_to_latex
+.. autofunction:: awesomefigures.fit_figure_to_latex
 
-.. autofunction:: contrastcolors.verify_latex_placement
+.. autofunction:: awesomefigures.verify_latex_placement
 
 TEX_PT_PER_INCH
     Conversion constant: 72.27 TeX points per inch.
@@ -228,19 +228,19 @@ TEX_PT_PER_INCH
 Publication style
 -----------------
 
-.. autofunction:: contrastcolors.set_style
+.. autofunction:: awesomefigures.set_style
 
-.. autofunction:: contrastcolors.style_context
+.. autofunction:: awesomefigures.style_context
 
-.. autofunction:: contrastcolors.apply_elegant_axes
+.. autofunction:: awesomefigures.apply_elegant_axes
 
-.. autofunction:: contrastcolors.nice_tick_bounds
+.. autofunction:: awesomefigures.nice_tick_bounds
 
-.. autofunction:: contrastcolors.save_figure
+.. autofunction:: awesomefigures.save_figure
 
-.. autofunction:: contrastcolors.panel_label
+.. autofunction:: awesomefigures.panel_label
 
-.. autofunction:: contrastcolors.available_styles
+.. autofunction:: awesomefigures.available_styles
 
 Heri style constants
 --------------------
@@ -280,25 +280,25 @@ HERI_CMAP
 Advanced color-space helpers
 ----------------------------
 
-These functions live in the contrastcolors.color_spaces module. They are useful
+These functions live in the awesomefigures.color_spaces module. They are useful
 for implementing custom palette algorithms or diagnostics, but are not all
 re-exported at the package root.
 
-.. autofunction:: contrastcolors.color_spaces.srgb_to_linear
+.. autofunction:: awesomefigures.color_spaces.srgb_to_linear
 
-.. autofunction:: contrastcolors.color_spaces.linear_to_srgb
+.. autofunction:: awesomefigures.color_spaces.linear_to_srgb
 
-.. autofunction:: contrastcolors.color_spaces.oklch_to_linear_srgb
+.. autofunction:: awesomefigures.color_spaces.oklch_to_linear_srgb
 
-.. autofunction:: contrastcolors.color_spaces.in_srgb_gamut
+.. autofunction:: awesomefigures.color_spaces.in_srgb_gamut
 
 Advanced style constants
 ------------------------
 
-contrastcolors.style.HERI_BAD_DATA_COLOR
+awesomefigures.style.HERI_BAD_DATA_COLOR
     Hex color #999999 used for bad/missing values in HERI_CMAP.
 
-contrastcolors.style.HERI_SAVEFIG_KWARGS
+awesomefigures.style.HERI_SAVEFIG_KWARGS
     Default save settings used by save_figure:
 
     .. code-block:: python
