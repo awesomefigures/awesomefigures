@@ -101,10 +101,10 @@ def _line_marker_indices(line, ax: Axes, *, inset_pt: float, count: int) -> None
         return
 
     current = line.get_markevery()
-    previous = getattr(line, "_contrastcolors_elegant_applied", object())
+    previous = getattr(line, "_awesomefigures_elegant_applied", object())
     if current != previous:
-        line._contrastcolors_elegant_source = current
-    source = getattr(line, "_contrastcolors_elegant_source", current)
+        line._awesomefigures_elegant_source = current
+    source = getattr(line, "_awesomefigures_elegant_source", current)
 
     if source is None:
         candidates = np.arange(len(x), dtype=int)
@@ -151,7 +151,7 @@ def _line_marker_indices(line, ax: Axes, *, inset_pt: float, count: int) -> None
         ))]
     selected = accepted.astype(int).tolist()
     line.set_markevery(selected)
-    line._contrastcolors_elegant_applied = selected
+    line._awesomefigures_elegant_applied = selected
 
 
 def apply_elegant_axes(
@@ -179,7 +179,7 @@ def apply_elegant_axes(
     if not math.isfinite(padding) or padding < 0:
         raise ValueError("padding must be nonnegative and finite.")
     # Keep the user's tick preferences for subsequent automatic renders.
-    ax._contrastcolors_elegant_options = dict(
+    ax._awesomefigures_elegant_options = dict(
         target_xticks=target_xticks, target_yticks=target_yticks,
         marker_inset_pt=marker_inset_pt, marker_count=marker_count,
         force_zero=force_zero, padding=padding,
