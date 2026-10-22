@@ -135,8 +135,18 @@ def test_dense_triangles_have_legible_physical_spacing(style_name, markevery):
     chosen = line.get_markevery()
     assert isinstance(chosen, list)
     assert 1 <= len(chosen) <= 7
-    assert 0 not in chosen and len(x) - 1 not in chosen
+    # In 'elegante' a line may touch the spine, so endpoint markers
+    # must be inset. 'heri' retains default Matplotlib axis margins, so
+    # an endpoint marker can be fully inside the visible plotting area.
+    if style_name == "elegante":
+        assert 0 not in chosen and len(x) - 1 not in chosen
     screen = ax.transData.transform(before[chosen])
+    inset_pt = 6 + line.get_markersize() / 2 + line.get_markeredgewidth() / 2
+    for sx, sy in screen:
+        assert (sx - ax.bbox.x0) * 72 / fig.dpi >= inset_pt - 0.01
+        assert (ax.bbox.x1 - sx) * 72 / fig.dpi >= inset_pt - 0.01
+        assert (sy - ax.bbox.y0) * 72 / fig.dpi >= inset_pt - 0.01
+        assert (ax.bbox.y1 - sy) * 72 / fig.dpi >= inset_pt - 0.01
     for i in range(len(screen)):
         for j in range(i):
             distance_pt = np.linalg.norm(screen[i] - screen[j]) * 72 / fig.dpi
