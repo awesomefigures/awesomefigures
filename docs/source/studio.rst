@@ -1,5 +1,5 @@
 AwesomeFigures Palette & Plot Studio
-==================================
+====================================
 
 The Studio is a static, interactive browser application for designing
 contrast-controlled scientific figures. It runs without a server, database,
