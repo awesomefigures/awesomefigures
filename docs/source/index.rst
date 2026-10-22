@@ -5,7 +5,7 @@
        <div class="cc-eyebrow">Scientific palettes + Matplotlib styles</div>
        <h1>Design figures that survive the paper.</h1>
        <p>
-         contrastcolors builds hue-flexible palettes with controlled luminance
+         awesomefigures builds hue-flexible palettes with controlled luminance
          contrast, alpha-aware rendering, redundant line identifiers, and a
          publication style for Matplotlib.
        </p>
@@ -124,13 +124,13 @@ build. They are not screenshots or hand-drawn approximations.
 
    import numpy as np
    import matplotlib.pyplot as plt
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   cc.set_style("heri", font="DejaVu Sans")
+   af.set_style("heri", font="DejaVu Sans")
 
    rng = np.random.default_rng(7)
    x = np.linspace(0, 10, 250)
-   colors = cc.color_palette(
+   colors = af.color_palette(
        hues=[20, 145, 210, 290],
        ratio=1.22,
        start_luminance=0.72,
@@ -156,16 +156,16 @@ build. They are not screenshots or hand-drawn approximations.
 
    mean = np.sin(x * 0.6)
    band = 0.18 + 0.06 * np.cos(x)
-   axes[1, 0].plot(x, mean, color=cc.HERI_PALETTE[1])
+   axes[1, 0].plot(x, mean, color=af.HERI_PALETTE[1])
    axes[1, 0].fill_between(
        x, mean - band, mean + band,
-       color=cc.HERI_PALETTE[1], alpha=0.22
+       color=af.HERI_PALETTE[1], alpha=0.22
    )
    axes[1, 0].set_title("Uncertainty")
 
    z = np.outer(np.sin(np.linspace(0, np.pi, 42)),
                 np.cos(np.linspace(-1.7, 1.7, 58)))
-   im = axes[1, 1].imshow(z, cmap=cc.HERI_CMAP, aspect="auto")
+   im = axes[1, 1].imshow(z, cmap=af.HERI_CMAP, aspect="auto")
    axes[1, 1].set_title("Heatmap")
    fig.colorbar(im, ax=axes[1, 1], fraction=0.046, pad=0.04)
 
@@ -226,11 +226,11 @@ built-in categorical cycle, or generate your own contrast-controlled colors.
 
 .. code-block:: python
 
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   cc.set_style("heri", font="Arial")
+   af.set_style("heri", font="Arial")
 
-   scheme = cc.plot_scheme(
+   scheme = af.plot_scheme(
        hues=[55, 20, 145, 210, 290],
        ratio=1.4,
        markers=["o", "s", "^", "D", "X"],

@@ -1,14 +1,14 @@
 Capability inventory
 ====================
 
-**Canonical feature catalogue for the implemented version of** ``contrastcolors``.
+**Canonical feature catalogue for the implemented version of** ``awesomefigures``.
 This page is based on the actual public names exported by
-``src/contrastcolors/__init__.py``. A regression test checks that every
+``src/awesomefigures/__init__.py``. A regression test checks that every
 public symbol appears here: when the Python API grows, the inventory must be
 updated with it.
 
 The package is a layer on top of Matplotlib, not a replacement plotting engine.
-Most chart families come from Matplotlib; ``contrastcolors`` supplies
+Most chart families come from Matplotlib; ``awesomefigures`` supplies
 palettes, identifiers, publication styles, diagnostics, or wrappers.
 
 .. contents:: Jump to a capability
@@ -145,9 +145,9 @@ Make a palette with explicit contrast levels:
 
 .. code-block:: python
 
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   p = cc.contrast_palette(
+   p = af.contrast_palette(
        hues=[25, 155, 275], ratio=1.55,
        start_luminance=0.65, chroma=0.12,
    )
@@ -160,7 +160,7 @@ redundant line encodings:
 
 .. code-block:: python
 
-   styles = cc.plot_scheme([25, 155, 275])
+   styles = af.plot_scheme([25, 155, 275])
    for values, styling in zip(three_y_series, styles):
        ax.plot(x, values, **styling)
 
@@ -168,7 +168,7 @@ For real manuscript dimensions and its own TeX font glyphs:
 
 .. code-block:: python
 
-   with cc.latex_style("paper/main.tex", width="column") as pub:
+   with af.latex_style("paper/main.tex", width="column") as pub:
        fig, ax = pub.subplots()
        ax.plot([0, 1, 2], [1, 3, 2])
        pub.savefig(fig, "paper/figures/figure.pgf")
