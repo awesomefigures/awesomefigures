@@ -1,7 +1,7 @@
 Styles
 ======
 
-``contrastcolors`` includes three style states: ``heri`` (publication
+``awesomefigures`` includes three style states: ``heri`` (publication
 colours, fonts, and redundant line identifiers), ``elegante`` (those
 publication defaults plus rigorously aligned endpoint ticks and inset
 markers), and Matplotlib ``default``. Use ``available_styles()`` to
@@ -30,9 +30,9 @@ WTI categorical colors.
 
    import numpy as np
    import matplotlib.pyplot as plt
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   cc.set_style("heri", font="DejaVu Sans")
+   af.set_style("heri", font="DejaVu Sans")
 
    x = np.linspace(0, 9, 260)
    fig, ax = plt.subplots(figsize=(8.0, 4.1))
@@ -56,25 +56,25 @@ Use it with:
 
 .. code-block:: python
 
-   cc.set_style("heri", font="Arial")
+   af.set_style("heri", font="Arial")
 
 Choose another font without changing the rest of the style:
 
 .. code-block:: python
 
-   cc.set_style("heri", font="Helvetica")
-   cc.set_style("heri", font="STIX")
-   cc.set_style("heri", font="DejaVu Sans")
-   cc.set_style("heri", font="utopia")
+   af.set_style("heri", font="Helvetica")
+   af.set_style("heri", font="STIX")
+   af.set_style("heri", font="DejaVu Sans")
+   af.set_style("heri", font="utopia")
 
 The default categorical cycle is the print-safe variant. The original
-colors remain in ``cc.HERI_PALETTE`` and can be activated with:
+colors remain in ``af.HERI_PALETTE`` and can be activated with:
 
 .. code-block:: python
 
-   cc.set_style("heri", palette="legacy")
+   af.set_style("heri", palette="legacy")
 
-The continuous heatmap colormap is ``cc.HERI_CMAP``.
+The continuous heatmap colormap is ``af.HERI_CMAP``.
 
 Select published palettes without changing their original colours
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -84,14 +84,14 @@ cycles. For example:
 
 .. code-block:: python
 
-   cc.set_style("elegante", palette="okabe-ito",
+   af.set_style("elegante", palette="okabe-ito",
                 font="DejaVu Sans", use_tex=False)
-   cc.set_style("heri", palette="tol-bright",
+   af.set_style("heri", palette="tol-bright",
                 font="DejaVu Sans", use_tex=False)
 
 See the visual :doc:`named_palettes` catalogue. Sequential palettes
 such as ``cividis`` are not used as categorical cycles; obtain their
-native Matplotlib map with ``cc.named_colormap("cividis")``.
+native Matplotlib map with ``af.named_colormap("cividis")``.
 
 Elegante — balanced ticks and inset markers
 ---------------------------------------------
@@ -115,9 +115,9 @@ markers by default, keeping their original continuous curve.
 
    import numpy as np
    import matplotlib.pyplot as plt
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   cc.set_style("elegante", font="DejaVu Sans", use_tex=False, rasterize=False)
+   af.set_style("elegante", font="DejaVu Sans", use_tex=False, rasterize=False)
    x = np.linspace(0, 100, 501)
    fig, ax = plt.subplots(figsize=(8, 3.7))
 
@@ -162,11 +162,11 @@ The same reasoning applies independently to ``y``.
 
 .. code-block:: python
 
-   cc.set_style("elegante", font="Arial", use_tex=False)
+   af.set_style("elegante", font="Arial", use_tex=False)
    fig, ax = plt.subplots()
    ax.plot(x, y, marker="^")
 
-   cc.apply_elegant_axes(
+   af.apply_elegant_axes(
        ax,
        target_xticks=6,
        target_yticks=5,
@@ -185,7 +185,7 @@ for tick generation without creating a plot.
 
 .. code-block:: python
 
-   low, high, ticks = cc.nice_tick_bounds(7, 94, target_ticks=6)
+   low, high, ticks = af.nice_tick_bounds(7, 94, target_ticks=6)
    # 0.0, 100.0, array([0., 20., 40., 60., 80., 100.])
 
 **Limits and reproducibility:** user-set ``set_xlim()`` and
@@ -212,9 +212,9 @@ rasterization switch installed by the Heri preset.
 
    import numpy as np
    import matplotlib.pyplot as plt
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   cc.set_style("default")
+   af.set_style("default")
 
    x = np.linspace(0, 9, 260)
    fig, ax = plt.subplots(figsize=(8.0, 4.1))
@@ -238,7 +238,7 @@ Restore it with:
 
 .. code-block:: python
 
-   cc.set_style("default")
+   af.set_style("default")
 
 Heri with a custom palette
 --------------------------
@@ -251,11 +251,11 @@ colors. Generate a palette and pass its colors to the artists.
 
    import numpy as np
    import matplotlib.pyplot as plt
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   cc.set_style("heri", font="DejaVu Sans")
+   af.set_style("heri", font="DejaVu Sans")
 
-   colors = cc.color_palette(
+   colors = af.color_palette(
        hues=[55, 20, 145, 210, 290],
        ratio=1.20,
        start_luminance=0.72,
@@ -292,22 +292,22 @@ Ordinary plot lines, error bars, axes, text, ticks and legends stay vector.
 
 .. code-block:: python
 
-   cc.set_style("heri", font="Arial", rasterize=True)
-   cc.save_figure(fig, "result.pdf", dpi=600)
+   af.set_style("heri", font="Arial", rasterize=True)
+   af.save_figure(fig, "result.pdf", dpi=600)
 
 Panel labels
 ~~~~~~~~~~~~
 
 .. code-block:: python
 
-   cc.panel_label(ax, "A")
+   af.panel_label(ax, "A")
 
 Temporary styling
 ~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
-   with cc.style_context("heri", font="Arial"):
+   with af.style_context("heri", font="Arial"):
        fig, ax = plt.subplots()
        ax.plot(x, y)
 
