@@ -1,6 +1,24 @@
+# Full development environment for AwesomeFigures.
+#
+# From the repository root:
+#   conda env create -f environment.yml
+#   conda activate awesomefigures
+#   python -m pip check
+#   python -c "import awesomefigures as af; print(af.__version__)"
+#
+# This is a development environment, not a requirements lockfile.
+# pyproject.toml remains the authority for pip dependencies and extras.
 name: awesomefigures
 channels:
   - conda-forge
 dependencies:
   - python=3.12
   - pip
+  # Let Conda handle compiled scientific packages and their native libraries.
+  - numpy>=1.24
+  - matplotlib>=3.7
+  - colorspacious>=1.1.2
+  # Install this repository in editable mode, with its optional tooling.
+  # The environment must be created/updated from the repository root.
+  - pip:
+      - -e .[dev,docs,notebooks]
