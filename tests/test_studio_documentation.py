@@ -43,7 +43,7 @@ def test_studio_has_real_export_and_design_controls():
     assert "designSnapshot()" in content
     assert "applyDesign(raw)" in content
     assert "_static/studio.html" in doc
-    assert "contrastcolors-studio-height" in doc
+    assert "awesomefigures-studio-height" in doc
 
 
 def test_palette_studio_has_visual_hue_methods_and_cvd_modes():
@@ -74,7 +74,7 @@ def test_palette_studio_has_visual_hue_methods_and_cvd_modes():
 def test_print_safe_studio_defaults_adapt_to_color_count():
     html = STUDIO.read_text(encoding="utf-8")
     assert 'value="print-safe" selected' in html
-    assert "contrastcolors.print_safe_luminances" in html
+    assert "awesomefigures.print_safe_luminances" in html
     assert "Math.pow((light+.05)/(dark+.05),1/(n-1))" in html
     assert "ratio<1||ratio>8" in html
 
@@ -82,7 +82,7 @@ def test_print_safe_studio_defaults_adapt_to_color_count():
 def test_studio_historical_palettes_match_python_exactly():
     """A browser preview must not quietly depart from Python's HEX scheme."""
     import re
-    import contrastcolors as cc
+    import awesomefigures as cc
 
     html = STUDIO.read_text(encoding="utf-8")
     el = Elements()
