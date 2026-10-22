@@ -19,9 +19,9 @@ Direct composition
 
 .. code-block:: python
 
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   displayed = cc.composite(
+   displayed = af.composite(
        foreground="#0083F9",
        background="white",
        alpha=0.70,
@@ -40,7 +40,7 @@ Use compensate_alpha:
 
 .. code-block:: python
 
-   result = cc.compensate_alpha(
+   result = af.compensate_alpha(
        "#0083F9",
        alpha=0.70,
        background="white",
@@ -80,7 +80,7 @@ This is the default.
 
 .. code-block:: python
 
-   result = cc.compensate_alpha(
+   result = af.compensate_alpha(
        target="#0083F9",
        alpha=0.55,
        background="white",
@@ -95,7 +95,7 @@ Clip strategy
 
 .. code-block:: python
 
-   result = cc.compensate_alpha(
+   result = af.compensate_alpha(
        target="#0083F9",
        alpha=0.55,
        background="white",
@@ -113,7 +113,7 @@ possible on a known background:
 
 .. code-block:: python
 
-   alpha_min = cc.minimum_alpha(
+   alpha_min = af.minimum_alpha(
        "#0083F9",
        background="white",
    )
@@ -150,7 +150,7 @@ Or through the high-level constructor:
 
 .. code-block:: python
 
-   colors = cc.color_palette(
+   colors = af.color_palette(
        hues=[55, 20, 145, 210, 290],
        ratio=1.4,
        alpha=0.75,

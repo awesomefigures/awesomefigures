@@ -1,4 +1,4 @@
-name: contrastcolors
+name: awesomefigures
 channels:
   - conda-forge
 dependencies:

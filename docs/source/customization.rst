@@ -13,9 +13,9 @@ keeps decorative markers inside the axes without changing spline data.
 
 .. code-block:: python
 
-   cc.set_style("elegante", font="Arial")
+   af.set_style("elegante", font="Arial")
    ax.plot(x, y, marker="o")
-   cc.apply_elegant_axes(ax, target_xticks=6, marker_inset_pt=4)
+   af.apply_elegant_axes(ax, target_xticks=6, marker_inset_pt=4)
 
 For a visual comparison of all three styles, see :doc:`style`.
 
@@ -26,7 +26,7 @@ The number of hues is the number of generated colors.
 
 .. code-block:: python
 
-   colors = cc.color_palette(
+   colors = af.color_palette(
        hues=[35, 95, 155, 215, 275, 330],
        ratio=1.18,
        start_luminance=0.72,
@@ -57,7 +57,7 @@ See different palette sizes
    :include-source:
 
    import matplotlib.pyplot as plt
-   import contrastcolors as cc
+   import awesomefigures as af
 
    fig, axes = plt.subplots(3, 1, figsize=(8.2, 2.8))
 
@@ -68,7 +68,7 @@ See different palette sizes
    ]
 
    for ax, (hues, ratio, start, title) in zip(axes, configs):
-       colors = cc.color_palette(
+       colors = af.color_palette(
            hues=hues,
            ratio=ratio,
            start_luminance=start,
@@ -90,12 +90,12 @@ which hue receives each luminance level.
 
 .. code-block:: python
 
-   palette_a = cc.contrast_palette(
+   palette_a = af.contrast_palette(
        hues=[55, 20, 145, 210, 290],
        ratio=1.4,
    )
 
-   palette_b = cc.contrast_palette(
+   palette_b = af.contrast_palette(
        hues=[210, 145, 55, 290, 20],
        ratio=1.4,
    )
@@ -110,7 +110,7 @@ Use ``plot_scheme`` when color should not be the only identifier.
 
 .. code-block:: python
 
-   scheme = cc.plot_scheme(
+   scheme = af.plot_scheme(
        hues=[55, 20, 145, 210, 290],
        ratio=1.3,
        markers=["o", "s", "^", "D", "X"],
@@ -130,11 +130,11 @@ The Heri visual style and font family are independent.
 
 .. code-block:: python
 
-   cc.set_style("heri", font="Arial")
-   cc.set_style("heri", font="Helvetica")
-   cc.set_style("heri", font="STIX")
-   cc.set_style("heri", font="DejaVu Sans")
-   cc.set_style("heri", font="utopia")
+   af.set_style("heri", font="Arial")
+   af.set_style("heri", font="Helvetica")
+   af.set_style("heri", font="STIX")
+   af.set_style("heri", font="DejaVu Sans")
+   af.set_style("heri", font="utopia")
 
 ``Arial`` and other custom families use native Matplotlib text when
 ``use_tex="auto"``. Matplotlib applies its normal fallback behavior if a font
@@ -145,7 +145,7 @@ Change transparency and background
 
 .. code-block:: python
 
-   colors = cc.color_palette(
+   colors = af.color_palette(
        hues=[20, 145, 210],
        ratio=1.3,
        alpha=0.65,
@@ -163,14 +163,14 @@ The built-in categorical cycle is available as:
 
 .. code-block:: python
 
-   cc.HERI_PALETTE
+   af.HERI_PALETTE
 
 You can use individual entries directly:
 
 .. code-block:: python
 
-   ax.plot(x, y, color=cc.HERI_PALETTE[1])
-   ax.scatter(x2, y2, color=cc.HERI_PALETTE[2])
+   ax.plot(x, y, color=af.HERI_PALETTE[1])
+   ax.scatter(x2, y2, color=af.HERI_PALETTE[2])
 
 Or generate an entirely new palette with ``color_palette``. The Heri style does
 not require the Heri categorical colors.
@@ -182,7 +182,7 @@ Use the supplied publication colormap:
 
 .. code-block:: python
 
-   ax.imshow(values, cmap=cc.HERI_CMAP)
+   ax.imshow(values, cmap=af.HERI_CMAP)
 
 Or use any normal Matplotlib colormap:
 
@@ -198,14 +198,14 @@ and typography remain vector.
 
 .. code-block:: python
 
-   cc.set_style("heri", font="Arial", rasterize=True)
-   cc.save_figure(fig, "figure.pdf", dpi=600)
+   af.set_style("heri", font="Arial", rasterize=True)
+   af.save_figure(fig, "figure.pdf", dpi=600)
 
 Turn automatic dense-artist rasterization off with:
 
 .. code-block:: python
 
-   cc.set_style("heri", font="Arial", rasterize=False)
+   af.set_style("heri", font="Arial", rasterize=False)
 
 Interactive customization
 -------------------------

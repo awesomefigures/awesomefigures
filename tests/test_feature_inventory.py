@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_every_exported_name_is_documented_in_feature_catalogue():
     module = ast.parse(
-        (ROOT / "src/contrastcolors/__init__.py").read_text(encoding="utf-8")
+        (ROOT / "src/awesomefigures/__init__.py").read_text(encoding="utf-8")
     )
     assignments = (
         node for node in module.body

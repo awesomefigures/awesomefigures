@@ -1,6 +1,6 @@
 import numpy as np
 
-from contrastcolors import compensate_alpha, composite, minimum_alpha
+from awesomefigures import compensate_alpha, composite, minimum_alpha
 
 
 def test_exact_alpha_compensation_when_feasible():

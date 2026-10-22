@@ -4,8 +4,8 @@ matplotlib.use("Agg", force=True)
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-import contrastcolors as cc
-import contrastcolors.publication as publication
+import awesomefigures as cc
+import awesomefigures.publication as publication
 
 
 def test_find_tex_font_metrics_only(monkeypatch, tmp_path):

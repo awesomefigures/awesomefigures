@@ -2,7 +2,7 @@ Notebook cookbook
 =================
 
 These 13 notebooks are executable Sphinx pages. Every figure is immediately followed by a six-view accessibility panel. During the documentation build,
-MyST-NB runs the code against the installed version of contrastcolors and
+MyST-NB runs the code against the installed version of awesomefigures and
 embeds the real Matplotlib outputs.
 
 .. toctree::
@@ -43,7 +43,7 @@ GitHub Actions
 The manual workflow named ``refresh notebooks and site`` performs the entire
 publication workflow in one run:
 
-1. installs contrastcolors and the notebook dependencies;
+1. installs awesomefigures and the notebook dependencies;
 2. executes all notebooks;
 3. saves every output inside the notebooks;
 4. commits changed .ipynb files back to the repository;

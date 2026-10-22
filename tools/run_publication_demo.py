@@ -12,7 +12,7 @@ from pathlib import Path
 import shutil
 
 import numpy as np
-import contrastcolors as cc
+import awesomefigures as af
 
 
 def main() -> int:
@@ -26,8 +26,8 @@ def main() -> int:
     args.output.mkdir(parents=True, exist_ok=True)
 
     if args.tex:
-        layout = cc.inspect_latex(args.tex, engine=args.engine)
-        detected = cc.find_latex_font(args.tex, engine=args.engine)
+        layout = af.inspect_latex(args.tex, engine=args.engine)
+        detected = af.find_latex_font(args.tex, engine=args.engine)
         print(f"LaTeX body font: {detected.tex_font_name}")
         print(f"Font outline (if located): {detected.outline_path}")
         print(f"Font metrics (if located): {detected.metrics_path}")
@@ -35,12 +35,12 @@ def main() -> int:
         print(f"Measured {args.tex}: column {layout.columnwidth_pt:.2f} pt, "
               f"text {layout.textwidth_pt:.2f} pt, font {layout.fontsize_pt:.2f} pt.")
     else:
-        layout = cc.LatexLayout.from_dimensions(
+        layout = af.LatexLayout.from_dimensions(
             columnwidth_pt=245, textwidth_pt=510, fontsize_pt=10
         )
         print("Using illustrative dimensions. Pass --tex to inspect a real manuscript.")
 
-    with cc.latex_style(layout, width="column", engine=args.engine) as pub:
+    with af.latex_style(layout, width="column", engine=args.engine) as pub:
         fig, ax = pub.subplots(height_ratio=0.67)
         x = np.linspace(0, 10, 240)
         for i in range(3):
@@ -60,7 +60,7 @@ def main() -> int:
             print(" -", warning)
         if args.tex:
             proof = args.output / "publication_proof.pdf"
-            cc.verify_latex_placement(
+            af.verify_latex_placement(
                 args.tex, pdf, width="column",
                 engine=args.engine, proof_pdf=proof
             )

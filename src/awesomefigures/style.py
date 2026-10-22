@@ -1,4 +1,4 @@
-"""Matplotlib publication styles for contrastcolors.
+"""Matplotlib publication styles for awesomefigures.
 
 The Heri preset follows the publication figures in
 heri-espino/Bayesian-Uncertainty-in-WTI-APOs: compact Wiley-like typography,
@@ -90,6 +90,7 @@ _RASTERIZE_DENSE = False
 _ACCESSIBLE_SCATTER = False
 _ELEGANT_ENABLED = False
 _ELEGANT_DRAW_PATCHED = False
+_SPARSE_LINE_MARKERS = False
 
 
 def _install_elegant_draw() -> None:
@@ -100,7 +101,7 @@ def _install_elegant_draw() -> None:
     while an explicit apply_elegant_axes call also works without the preset.
     """
     global _ELEGANT_DRAW_PATCHED
-    if _ELEGANT_DRAW_PATCHED or getattr(Axes, "_contrastcolors_elegant_draw", False):
+    if _ELEGANT_DRAW_PATCHED or getattr(Axes, "_awesomefigures_elegant_draw", False):
         _ELEGANT_DRAW_PATCHED = True
         return
     original_draw = Axes.draw
@@ -108,12 +109,15 @@ def _install_elegant_draw() -> None:
     def draw(self, renderer):
         if _ELEGANT_ENABLED:
             from .elegant import apply_elegant_axes
-            opts = getattr(self, "_contrastcolors_elegant_options", {})
+            opts = getattr(self, "_awesomefigures_elegant_options", {})
             apply_elegant_axes(self, **opts)
+        elif _SPARSE_LINE_MARKERS:
+            from .elegant import thin_line_markers
+            thin_line_markers(self)
         return original_draw(self, renderer)
 
     Axes.draw = draw
-    Axes._contrastcolors_elegant_draw = True
+    Axes._awesomefigures_elegant_draw = True
     _ELEGANT_DRAW_PATCHED = True
 
 
@@ -158,12 +162,12 @@ def _set_rasterized(artist):
 def _install_rasterized_defaults() -> None:
     """Rasterize dense artists conditionally while leaving ordinary lines vector."""
     global _RASTER_PATCHED
-    if _RASTER_PATCHED or getattr(Axes, "_contrastcolors_rasterized_defaults", False):
+    if _RASTER_PATCHED or getattr(Axes, "_awesomefigures_rasterized_defaults", False):
         _RASTER_PATCHED = True
         return
 
     _RASTER_PATCHED = True
-    Axes._contrastcolors_rasterized_defaults = True
+    Axes._awesomefigures_rasterized_defaults = True
 
     original_scatter = Axes.scatter
     original_hexbin = Axes.hexbin
@@ -175,9 +179,9 @@ def _install_rasterized_defaults() -> None:
     def scatter(self, *args, **kwargs):
         if _ACCESSIBLE_SCATTER and "marker" not in kwargs:
             from .api import DEFAULT_MARKERS
-            index = getattr(self, "_contrastcolors_scatter_index", 0)
+            index = getattr(self, "_awesomefigures_scatter_index", 0)
             kwargs["marker"] = DEFAULT_MARKERS[index % len(DEFAULT_MARKERS)]
-            self._contrastcolors_scatter_index = index + 1
+            self._awesomefigures_scatter_index = index + 1
         if _RASTERIZE_DENSE:
             kwargs.setdefault("rasterized", True)
         return original_scatter(self, *args, **kwargs)
@@ -217,10 +221,10 @@ def _install_rasterized_defaults() -> None:
     except Exception:
         return
 
-    if getattr(Axes3D, "_contrastcolors_rasterized_defaults", False):
+    if getattr(Axes3D, "_awesomefigures_rasterized_defaults", False):
         return
 
-    Axes3D._contrastcolors_rasterized_defaults = True
+    Axes3D._awesomefigures_rasterized_defaults = True
     original_plot_surface = Axes3D.plot_surface
     original_plot_trisurf = Axes3D.plot_trisurf
 
@@ -378,13 +382,14 @@ def set_style(
     With rasterize=True, only dense artists are rasterized. Ordinary plot
     lines, errorbars, axes, text, ticks, legends, and annotations remain vector.
     """
-    global _RASTERIZE_DENSE, _ACCESSIBLE_SCATTER, _ELEGANT_ENABLED
+    global _RASTERIZE_DENSE, _ACCESSIBLE_SCATTER, _ELEGANT_ENABLED, _SPARSE_LINE_MARKERS
 
     name = str(style).strip().lower()
     if name in {"default", "matplotlib"}:
         _RASTERIZE_DENSE = False
         _ACCESSIBLE_SCATTER = False
         _ELEGANT_ENABLED = False
+        _SPARSE_LINE_MARKERS = False
         mpl.rcdefaults()
         return
 
@@ -418,8 +423,8 @@ def set_style(
     _RASTERIZE_DENSE = bool(rasterize)
     _ACCESSIBLE_SCATTER = True
     _ELEGANT_ENABLED = name == "elegante"
-    if _ELEGANT_ENABLED:
-        _install_elegant_draw()
+    _SPARSE_LINE_MARKERS = True
+    _install_elegant_draw()
 
     font_key = font.strip().lower()
     if use_tex == "auto":
@@ -461,12 +466,13 @@ def style_context(
     palette: str = "print-safe",
 ) -> Iterator[None]:
     """Temporarily apply a style and restore previous Matplotlib state."""
-    global _RASTERIZE_DENSE, _ACCESSIBLE_SCATTER, _ELEGANT_ENABLED
+    global _RASTERIZE_DENSE, _ACCESSIBLE_SCATTER, _ELEGANT_ENABLED, _SPARSE_LINE_MARKERS
 
     previous = mpl.rcParams.copy()
     previous_rasterize = _RASTERIZE_DENSE
     previous_scatter = _ACCESSIBLE_SCATTER
     previous_elegant = _ELEGANT_ENABLED
+    previous_sparse = _SPARSE_LINE_MARKERS
     try:
         set_style(
             style,
@@ -480,6 +486,7 @@ def style_context(
         _RASTERIZE_DENSE = previous_rasterize
         _ACCESSIBLE_SCATTER = previous_scatter
         _ELEGANT_ENABLED = previous_elegant
+        _SPARSE_LINE_MARKERS = previous_sparse
         mpl.rcParams.update(previous)
 
 

@@ -94,7 +94,7 @@ The pie-chart illustration was removed from this publication demonstration.
 
 ## Fully vector dashboards
 
-The new `cc.show_vector_accessibility_panel` redraws Line2D and scatter
+The new `af.show_vector_accessibility_panel` redraws Line2D and scatter
 PathCollection data six times with color transformations *before drawing*.
 There is no rasterized snapshot inside these PDFs or PGFs. Each chart panel
 sets axis labels to the 10 pt body size of the actual manuscript, tick labels

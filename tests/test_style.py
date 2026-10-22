@@ -4,7 +4,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pytest
 
-import contrastcolors as cc
+import awesomefigures as cc
 
 
 def teardown_function():
@@ -102,7 +102,7 @@ def test_unknown_style_fails():
 
 
 def test_default_heri_palette_prioritizes_grayscale_separation():
-    from contrastcolors.color_spaces import relative_luminance
+    from awesomefigures.color_spaces import relative_luminance
 
     cc.set_style("heri", font="DejaVu Sans", use_tex=False)
     rendered = mpl.rcParams["axes.prop_cycle"].by_key()["color"]

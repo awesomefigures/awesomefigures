@@ -2,15 +2,16 @@
 
    <section class="cc-hero">
      <div>
-       <div class="cc-eyebrow">Scientific palettes + Matplotlib styles</div>
-       <h1>Design figures that survive the paper.</h1>
+       <div class="cc-eyebrow">AwesomeFigures / Scientific plotting toolkit</div>
+       <h1>AwesomeFigures<span class="af-title-dot">.</span><br>Every figure, considered.</h1>
        <p>
-         contrastcolors builds hue-flexible palettes with controlled luminance
-         contrast, alpha-aware rendering, redundant line identifiers, and a
-         publication style for Matplotlib.
+         Build publication-ready scientific figures with famous accessible
+         palettes, careful axis geometry, spacious line markers, and a
+         precise path from Matplotlib to LaTeX.
        </p>
        <div class="cc-actions">
          <a class="cc-button primary" href="studio.html">Open Palette Studio</a>
+         <a class="cc-button" href="named_palettes.html">Explore palettes</a>
          <a class="cc-button" href="style.html">Explore styles</a>
          <a class="cc-button" href="gallery.html">See the plot gallery</a>
          <a class="cc-button" href="notebooks/index.html">Browse 13 notebooks</a>
@@ -56,17 +57,48 @@ Matplotlib applies before the figure is exported.
       The familiar baseline, available to restore native Matplotlib
       behavior at any time.
 
-Recognized palettes, ready to use
-----------------------------------
+The palette library
+-------------------
 
-Use published palettes without retyping colours: Okabe–Ito, Paul Tol Bright,
-High Contrast and Muted, Tableau 10, and ColorBrewer Set2 and Dark2.
-For ordered data choose continuous maps such as cividis, viridis, plasma,
-magma and inferno, or a diverging map such as RdBu.
+A curated catalogue of familiar, attributed colours is ready to use in
+``AwesomeFigures``. Named palettes keep their original published HEX
+coordinates; the custom OKLCH engine remains available when you need
+mathematically controlled luminance and contrast.
 
-Read :doc:`named_palettes` for a visual atlas of every included scheme, its
-historical source and reproducible code. The colour values remain exact,
-rather than silently changing them to satisfy a WCAG luminance ladder.
+.. raw:: html
+
+   <div class="af-palette-gallery" aria-label="Featured scientific palettes">
+     <a class="af-palette-card" href="named_palettes.html">
+       <span class="af-palette-category">Colour-vision-aware starting point</span>
+       <strong>Okabe–Ito</strong>
+       <span class="af-palette-strip" aria-label="Eight original Okabe–Ito colours">
+         <i style="background:#E69F00"></i><i style="background:#56B4E9"></i><i style="background:#009E73"></i><i style="background:#F0E442"></i><i style="background:#0072B2"></i><i style="background:#D55E00"></i><i style="background:#CC79A7"></i><i style="background:#000000"></i>
+       </span>
+       <span class="af-palette-caption">8 categorical colours · Original published values</span>
+     </a>
+     <a class="af-palette-card" href="named_palettes.html">
+       <span class="af-palette-category">Qualitative colour cycle</span>
+       <strong>Paul Tol · Bright</strong>
+       <span class="af-palette-strip" aria-label="Seven Paul Tol Bright colours">
+         <i style="background:#4477AA"></i><i style="background:#EE6677"></i><i style="background:#228833"></i><i style="background:#CCBB44"></i><i style="background:#66CCEE"></i><i style="background:#AA3377"></i><i style="background:#BBBBBB"></i>
+       </span>
+       <span class="af-palette-caption">7 categories · Distinct hues and values</span>
+     </a>
+     <a class="af-palette-card" href="named_palettes.html">
+       <span class="af-palette-category">Categorical design system</span>
+       <strong>ColorBrewer · Dark2</strong>
+       <span class="af-palette-strip" aria-label="Eight ColorBrewer Dark2 colours">
+         <i style="background:#1B9E77"></i><i style="background:#D95F02"></i><i style="background:#7570B3"></i><i style="background:#E7298A"></i><i style="background:#66A61E"></i><i style="background:#E6AB02"></i><i style="background:#A6761D"></i><i style="background:#666666"></i>
+       </span>
+       <span class="af-palette-caption">8 categorical colours · Readable on white</span>
+     </a>
+   </div>
+
+More references include Paul Tol High Contrast and Muted, Tableau 10,
+ColorBrewer Set2, and the sequential/diverging maps
+``viridis``, ``cividis``, ``magma``, ``plasma``, ``inferno``, and
+``RdBu``. Browse the full :doc:`illustrated palette atlas <named_palettes>`
+or compare colours directly in :doc:`Palette & Plot Studio <studio>`.
 
 Notebook cookbook: 13 executable demos
 --------------------------------------
@@ -124,13 +156,13 @@ build. They are not screenshots or hand-drawn approximations.
 
    import numpy as np
    import matplotlib.pyplot as plt
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   cc.set_style("heri", font="DejaVu Sans")
+   af.set_style("heri", font="DejaVu Sans")
 
    rng = np.random.default_rng(7)
    x = np.linspace(0, 10, 250)
-   colors = cc.color_palette(
+   colors = af.color_palette(
        hues=[20, 145, 210, 290],
        ratio=1.22,
        start_luminance=0.72,
@@ -156,16 +188,16 @@ build. They are not screenshots or hand-drawn approximations.
 
    mean = np.sin(x * 0.6)
    band = 0.18 + 0.06 * np.cos(x)
-   axes[1, 0].plot(x, mean, color=cc.HERI_PALETTE[1])
+   axes[1, 0].plot(x, mean, color=af.HERI_PALETTE[1])
    axes[1, 0].fill_between(
        x, mean - band, mean + band,
-       color=cc.HERI_PALETTE[1], alpha=0.22
+       color=af.HERI_PALETTE[1], alpha=0.22
    )
    axes[1, 0].set_title("Uncertainty")
 
    z = np.outer(np.sin(np.linspace(0, np.pi, 42)),
                 np.cos(np.linspace(-1.7, 1.7, 58)))
-   im = axes[1, 1].imshow(z, cmap=cc.HERI_CMAP, aspect="auto")
+   im = axes[1, 1].imshow(z, cmap=af.HERI_CMAP, aspect="auto")
    axes[1, 1].set_title("Heatmap")
    fig.colorbar(im, ax=axes[1, 1], fraction=0.046, pad=0.04)
 
@@ -226,11 +258,11 @@ built-in categorical cycle, or generate your own contrast-controlled colors.
 
 .. code-block:: python
 
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   cc.set_style("heri", font="Arial")
+   af.set_style("heri", font="Arial")
 
-   scheme = cc.plot_scheme(
+   scheme = af.plot_scheme(
        hues=[55, 20, 145, 210, 290],
        ratio=1.4,
        markers=["o", "s", "^", "D", "X"],

@@ -12,7 +12,7 @@
 [CmdletBinding()]
 param(
     [ValidatePattern('^[A-Za-z][A-Za-z0-9_-]*$')]
-    [string]$EnvName = "contrastcolors",
+    [string]$EnvName = "awesomefigures",
 
     [ValidateRange(1, 3600)]
     [int]$NotebookTimeout = 300,
@@ -59,7 +59,7 @@ if (-not (Get-Command conda -ErrorAction SilentlyContinue)) {
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $OriginalLocation = (Get-Location).Path
 $PreviousExecutionMode = [Environment]::GetEnvironmentVariable(
-    "CONTRASTCOLORS_NB_EXECUTION", "Process"
+    "AWESOMEFIGURES_NB_EXECUTION", "Process"
 )
 
 try {
@@ -94,7 +94,7 @@ try {
     Invoke-InEnvironment -Arguments @("-m", "pip", "install", "-r", "requirements.txt")
     Invoke-InEnvironment -Arguments @("-m", "pip", "check")
     Invoke-InEnvironment -Arguments @("-c",
-        "import contrastcolors as cc; print('contrastcolors', cc.__version__)")
+        "import awesomefigures as af; print('awesomefigures', af.__version__)")
 
     Write-Host ""
     Write-Host "=== PYTEST ===" -ForegroundColor Green
@@ -120,7 +120,7 @@ try {
     Write-Host ""
     Write-Host "=== BUILD SPHINX ===" -ForegroundColor Green
     # Notebook outputs are saved already; avoid running them twice.
-    $env:CONTRASTCOLORS_NB_EXECUTION = "off"
+    $env:AWESOMEFIGURES_NB_EXECUTION = "off"
     Invoke-InEnvironment -Arguments @(
         "-m", "sphinx", "-W", "-b", "html",
         "docs/source", "docs/_build/html"
@@ -187,7 +187,7 @@ try {
 }
 finally {
     [Environment]::SetEnvironmentVariable(
-        "CONTRASTCOLORS_NB_EXECUTION", $PreviousExecutionMode, "Process"
+        "AWESOMEFIGURES_NB_EXECUTION", $PreviousExecutionMode, "Process"
     )
     Set-Location $OriginalLocation
 }

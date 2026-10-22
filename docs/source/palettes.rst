@@ -8,12 +8,12 @@ You can use exact published schemes without registration.
 
 .. code-block:: python
 
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   print(cc.available_named_palettes())
-   okabe_ito = cc.color_palette("okabe-ito", as_hex=True)
-   tol = cc.plot_scheme("tol-bright", n=4)
-   image = ax.imshow(values, cmap=cc.named_colormap("cividis"))
+   print(af.available_named_palettes())
+   okabe_ito = af.color_palette("okabe-ito", as_hex=True)
+   tol = af.plot_scheme("tol-bright", n=4)
+   image = ax.imshow(values, cmap=af.named_colormap("cividis"))
 
 ``okabe-ito`` and its ``colorblind`` alias preserve the original eight
 HEX values. Paul Tol and ColorBrewer presets also preserve their historical
@@ -33,9 +33,9 @@ Use color_palette when you want colors immediately.
 
 .. code-block:: python
 
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   colors = cc.color_palette(
+   colors = af.color_palette(
        hues=[55, 20, 145, 210, 290],
        ratio=1.4,
        start_luminance=0.95,
@@ -50,7 +50,7 @@ Returning hex colors
 
 .. code-block:: python
 
-   colors = cc.color_palette(
+   colors = af.color_palette(
        hues=[55, 20, 145],
        ratio=1.3,
        as_hex=True,
@@ -63,7 +63,7 @@ Use contrast_palette when you want to inspect or reuse the solved palette.
 
 .. code-block:: python
 
-   palette = cc.contrast_palette(
+   palette = af.contrast_palette(
        hues=[55, 20, 145, 210, 290],
        ratio=1.4,
    )
@@ -110,7 +110,7 @@ Build one with:
 
 .. code-block:: python
 
-   grid = cc.contrast_grid(
+   grid = af.contrast_grid(
        levels=5,
        hues=[55, 20, 145, 210, 290],
        ratio=1.4,
@@ -161,7 +161,7 @@ For lower-level work, solve one hue/luminance target directly:
 
 .. code-block:: python
 
-   cell = cc.color_for_luminance(
+   cell = af.color_for_luminance(
        target_luminance=0.40,
        hue=145,
        chroma=0.13,
@@ -184,4 +184,4 @@ For a continuous publication heatmap, the Heri style also exposes HERI_CMAP:
 
 .. code-block:: python
 
-   image = ax.imshow(values, cmap=cc.HERI_CMAP)
+   image = ax.imshow(values, cmap=af.HERI_CMAP)

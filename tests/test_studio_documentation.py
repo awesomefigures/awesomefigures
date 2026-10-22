@@ -38,12 +38,12 @@ def test_studio_has_real_export_and_design_controls():
         "lines", "time", "histogram", "box", "violin", "ridge",
         "scatter", "heatmap", "bar", "pie",
     } <= elements.types
-    assert "cc.register_palette(" in content
+    assert "af.register_palette(" in content
     assert "plotPython(plotType)" in content
     assert "designSnapshot()" in content
     assert "applyDesign(raw)" in content
     assert "_static/studio.html" in doc
-    assert "contrastcolors-studio-height" in doc
+    assert "awesomefigures-studio-height" in doc
 
 
 def test_palette_studio_has_visual_hue_methods_and_cvd_modes():
@@ -74,7 +74,7 @@ def test_palette_studio_has_visual_hue_methods_and_cvd_modes():
 def test_print_safe_studio_defaults_adapt_to_color_count():
     html = STUDIO.read_text(encoding="utf-8")
     assert 'value="print-safe" selected' in html
-    assert "contrastcolors.print_safe_luminances" in html
+    assert "awesomefigures.print_safe_luminances" in html
     assert "Math.pow((light+.05)/(dark+.05),1/(n-1))" in html
     assert "ratio<1||ratio>8" in html
 
@@ -82,24 +82,24 @@ def test_print_safe_studio_defaults_adapt_to_color_count():
 def test_studio_historical_palettes_match_python_exactly():
     """A browser preview must not quietly depart from Python's HEX scheme."""
     import re
-    import contrastcolors as cc
+    import awesomefigures as af
 
     html = STUDIO.read_text(encoding="utf-8")
     el = Elements()
     el.feed(html)
     assert "builtinPalette" in el.ids
-    for name in cc.available_named_palettes("categorical"):
+    for name in af.available_named_palettes("categorical"):
         match = re.search(r"'" + re.escape(name) + r"':\[([^]]+)\]", html)
         assert match, f"Missing browser palette: {name}"
         actual = re.findall(r"#[A-F0-9]{6}", match.group(1))
-        assert actual == cc.named_palette(name, as_hex=True)
+        assert actual == af.named_palette(name, as_hex=True)
     assert "let activeBuiltin=''" in html
     assert "function leaveBuiltin()" in html
     assert "function chooseBuiltin(name)" in html
     assert "Measured adjacent CR (not a WCAG design constraint)" in html
     assert "style:['heri','elegante','default']" in html
-    assert "cc.named_palette(" in html
-    assert "cc.plot_scheme(" in html
+    assert "af.named_palette(" in html
+    assert "af.plot_scheme(" in html
     assert "builtinPalette:activeBuiltin" in html
 
 

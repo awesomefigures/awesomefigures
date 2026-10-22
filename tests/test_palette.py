@@ -1,6 +1,6 @@
 import numpy as np
 
-from contrastcolors import contrast_grid
+from awesomefigures import contrast_grid
 
 
 def test_every_column_hits_row_luminance():
@@ -33,7 +33,7 @@ def test_diagonal_palette_has_expected_size():
 
 def test_contrast_grid_hex_text_uses_higher_contrast_foreground():
     import matplotlib.pyplot as plt
-    import contrastcolors as cc
+    import awesomefigures as cc
 
     grid = cc.contrast_grid(
         levels=3, hues=[25, 115, 205, 295],

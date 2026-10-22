@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Contrast Colors Picker</title>
+<title>AwesomeFigures · Hue/Luminance Picker</title>
 <style>
   :root { color-scheme: light dark; font-family: ui-sans-serif, system-ui, sans-serif; }
   * { box-sizing: border-box; }
@@ -34,7 +34,7 @@
 </style>
 </head>
 <body>
-<h1>Contrast Colors</h1>
+<h1>AwesomeFigures · Hue/Luminance Picker</h1>
 <div class="sub">Constant adjacent WCAG contrast, independently selectable hue, optional alpha compensation.</div>
 
 <div class="panel controls">
@@ -229,7 +229,7 @@ function renderSelection(){
   const ratios=picked.slice(0,-1).map((c,i)=>crY(c.Y,picked[i+1].Y));
   status.textContent='Adjacent CR: '+ratios.map(x=>x.toFixed(3)).join(', ')+' · alpha compensation: '+(feasibleAll?'exact for all selected colors':'gamut-limited for at least one color');
   const chosenHues=picked.map(c=>Number(c.h.toFixed(6)));
-  $('code').value='import contrastcolors as cc\n\ncolors = cc.color_palette(\n    hues=['+chosenHues.join(', ')+'],\n    ratio='+p.ratio+',\n    start_luminance='+p.startY+',\n    chroma='+p.C+',\n    alpha='+p.alpha+',\n    background="'+p.bg+'",\n    preserve_apparent='+(p.preserve?'True':'False')+',\n)\n';
+  $('code').value='import awesomefigures as af\n\ncolors = af.color_palette(\n    hues=['+chosenHues.join(', ')+'],\n    ratio='+p.ratio+',\n    start_luminance='+p.startY+',\n    chroma='+p.C+',\n    alpha='+p.alpha+',\n    background="'+p.bg+'",\n    preserve_apparent='+(p.preserve?'True':'False')+',\n)\n';
 }
 ['levels','ratio','startY','chroma','hues','alpha','background','preserve'].forEach(id=>$(id).addEventListener('input', id==='alpha'||id==='background'||id==='preserve'?renderSelection:rebuild));
 $('copy').onclick=async()=>{ await navigator.clipboard.writeText($('code').value); $('copy').textContent='Copied'; setTimeout(()=>$('copy').textContent='Copy',900); };

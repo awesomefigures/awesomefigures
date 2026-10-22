@@ -1,10 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-import contrastcolors as cc
+import awesomefigures as af
 
 # Five luminance levels, five independently selectable hues.
-grid = cc.contrast_grid(
+grid = af.contrast_grid(
     levels=5,
     hues=[55, 20, 145, 210, 290],
     ratio=1.4,

@@ -1,5 +1,5 @@
-Palette & Plot Studio
-=====================
+AwesomeFigures Palette & Plot Studio
+====================================
 
 The Studio is a static, interactive browser application for designing
 contrast-controlled scientific figures. It runs without a server, database,
@@ -17,7 +17,7 @@ Python interpreter, or account and works with the Sphinx site on GitHub Pages.
    <iframe
      id="cc-studio-frame"
      src="_static/studio.html"
-     title="Interactive contrastcolors Palette and Plot Studio"
+     title="Interactive awesomefigures Palette and Plot Studio"
      style="width:100%;height:3200px;border:0;border-radius:12px;"
      loading="lazy"
    ></iframe>
@@ -27,7 +27,7 @@ Python interpreter, or account and works with the Sphinx site on GitHub Pages.
        var frame = document.getElementById("cc-studio-frame");
        if (!frame || event.source !== frame.contentWindow ||
            event.origin !== window.location.origin) return;
-       if (!event.data || event.data.type !== "contrastcolors-studio-height") return;
+       if (!event.data || event.data.type !== "awesomefigures-studio-height") return;
        var value = Number(event.data.height);
        if (Number.isFinite(value) && value > 400 && value < 15000) {
          frame.style.height = Math.ceil(value + 28) + "px";
@@ -70,7 +70,7 @@ The interactive preview is SVG generated in the browser. It is a fast visual
 approximation, not the Matplotlib renderer. Color-vision previews operate on
 the plotted swatch colors using approximate Machado-style linear-RGB matrices,
 not on every pixel of a rendered Matplotlib figure. For publication checks
-use ``contrastcolors.show_accessibility_panel(fig)``, which renders the
+use ``awesomefigures.show_accessibility_panel(fig)``, which renders the
 complete figure with Colorspacious and includes annotations/labels. The **Copy code** action generates
 a complete, reproducible Python example for the selected plot family.
 
@@ -98,11 +98,11 @@ script, then:
 
 .. code-block:: python
 
-   import contrastcolors as cc
+   import awesomefigures as af
    import paper_palette  # registers the preset in this process
 
-   colors = cc.color_palette("paper_palette")
-   scheme = cc.plot_scheme("paper_palette")
+   colors = af.color_palette("paper_palette")
+   scheme = af.plot_scheme("paper_palette")
 
    for y, style in zip(series, scheme):
        ax.plot(x, y, **style)
@@ -111,9 +111,9 @@ You can also register the palette directly:
 
 .. code-block:: python
 
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   cc.register_palette(
+   af.register_palette(
        "paper_palette",
        hues=[55, 20, 145, 210, 290],
        ratio=1.22,
@@ -122,7 +122,7 @@ You can also register the palette directly:
        linestyles=["-", "--", ":", "-.", (0, (5, 2))],
    )
 
-   colors = cc.color_palette("paper_palette")
+   colors = af.color_palette("paper_palette")
 
 Registration is process-local; import the exported module every time you
 launch a new Python process. It does not modify the installed package files.
@@ -157,6 +157,6 @@ Pie chart defaults
 
 The Pie plot option previews **white wedge boundaries**, not dark outlines,
 including in grayscale and the CVD simulations. Exported code calls
-``cc.pie_plot(...)``, which uses print-safe categorical luminances and
+``af.pie_plot(...)``, which uses print-safe categorical luminances and
 white separating strokes by default. You can override the edge color and
 line thickness using ``wedgeprops`` when required by a journal.

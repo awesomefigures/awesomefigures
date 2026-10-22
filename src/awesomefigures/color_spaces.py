@@ -1,4 +1,4 @@
-"""Low-level color conversions used by :mod:`contrastcolors`.
+"""Low-level color conversions used by :mod:`awesomefigures`.
 
 The package deliberately keeps these routines small and dependency-light.
 Relative luminance follows WCAG's sRGB definition; OKLab conversions follow
