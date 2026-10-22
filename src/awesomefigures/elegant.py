@@ -84,12 +84,90 @@ def nice_tick_bounds(
     return float(lower), float(upper), ticks
 
 
-def _line_marker_indices(line, ax: Axes, *, inset_pt: float, count: int) -> None:
-    """Only reposition visible markers; retain the entire unchanged line."""
+def _same_markevery(a, b) -> bool:
+    """Compare marker specifications, including NumPy integer arrays."""
+    try:
+        return bool(np.array_equal(np.asarray(a, dtype=object),
+                                   np.asarray(b, dtype=object)))
+    except (TypeError, ValueError):
+        return False
+
+
+def _marker_candidates(line, xy: np.ndarray, vertices: np.ndarray,
+                       ax: Axes) -> np.ndarray | None:
+    """Resolve Matplotlib marker sampling into source indices.
+
+    Integer markevery settings retain their original eligible subset, which
+    is then thinned. Float settings are based on physical screen path length,
+    as in Matplotlib; unsupported configurations remain untouched.
+    """
+    n = len(xy)
+    source = getattr(line, "_awesomefigures_marker_source",
+                     line.get_markevery())
+    if source is None:
+        return np.arange(n, dtype=int)
+    if isinstance(source, (int, np.integer)) and not isinstance(source, bool):
+        return np.arange(0, n, int(source), dtype=int) if source > 0 else None
+    if isinstance(source, slice):
+        return np.arange(n, dtype=int)[source]
+    if isinstance(source, tuple) and len(source) == 2:
+        offset, step = source
+        if all(isinstance(v, (int, np.integer)) and not isinstance(v, bool)
+               for v in source):
+            return (np.arange(int(offset), n, int(step), dtype=int)
+                    if step > 0 else None)
+        if all(isinstance(v, (float, int, np.floating, np.integer))
+               for v in source) and step > 0:
+            start_distance = float(offset)
+            stride_fraction = float(step)
+        else:
+            return None
+    elif isinstance(source, (float, np.floating)) and source > 0:
+        start_distance, stride_fraction = 0., float(source)
+    elif isinstance(source, (list, np.ndarray)):
+        values = np.asarray(source)
+        if values.ndim != 1:
+            return None
+        if values.dtype.kind in "iu":
+            return np.arange(n, dtype=int)[values]
+        if values.dtype.kind == "b" and len(values) == n:
+            return np.flatnonzero(values)
+        return None
+    else:
+        return None
+
+    # Fractional markevery values measure diagonal-normalized screen distance.
+    finite = np.isfinite(vertices).all(axis=1)
+    segment = np.linalg.norm(np.diff(vertices, axis=0), axis=1)
+    segment[~(finite[1:] & finite[:-1])] = 0.
+    arclength = np.r_[0., np.cumsum(segment)]
+    diagonal = math.hypot(ax.bbox.width, ax.bbox.height)
+    stride = stride_fraction * diagonal
+    if not math.isfinite(stride) or stride <= 0:
+        return None
+    targets = np.arange(start_distance * diagonal, arclength[-1] + 1e-9,
+                        stride)
+    if len(targets) > n * 2:
+        targets = targets[:n * 2]
+    return np.unique(np.clip(np.searchsorted(arclength, targets),
+                             0, n - 1).astype(int))
+
+
+def _line_marker_indices(
+    line, ax: Axes, *, inset_pt: float, count: int, spacing_pt: float
+) -> None:
+    """Thin visible line markers in physical display space, not data space.
+
+    Redundant marker encodings remain legible on very densely sampled splines.
+    The Line2D path and original data points are left strictly unchanged.
+    Marker-only observations are intentionally preserved as data.
+    """
     marker = line.get_marker()
     if marker is None or str(marker).lower() in {"none", "", " ", "nan"}:
         return
-    if not line.get_visible():
+    if not line.get_visible() or str(line.get_linestyle()).lower() in {
+        "none", "", " "
+    }:
         return
     x = np.asarray(line.get_xdata(orig=False))
     y = np.asarray(line.get_ydata(orig=False))
@@ -101,57 +179,95 @@ def _line_marker_indices(line, ax: Axes, *, inset_pt: float, count: int) -> None
         return
 
     current = line.get_markevery()
-    previous = getattr(line, "_awesomefigures_elegant_applied", object())
-    if current != previous:
-        line._awesomefigures_elegant_source = current
-    source = getattr(line, "_awesomefigures_elegant_source", current)
+    previous = getattr(line, "_awesomefigures_elegant_applied", None)
+    if (not hasattr(line, "_awesomefigures_elegant_applied")
+            or not _same_markevery(current, previous)):
+        line._awesomefigures_marker_source = current
 
-    if source is None:
-        candidates = np.arange(len(x), dtype=int)
-    elif isinstance(source, (int, np.integer)) and not isinstance(source, bool):
-        if source <= 0:
-            return
-        candidates = np.arange(0, len(x), int(source), dtype=int)
-    elif isinstance(source, slice):
-        candidates = np.arange(len(x))[source]
-    elif (isinstance(source, tuple) and len(source) == 2
-          and all(isinstance(v, (int, np.integer)) for v in source)):
-        offset, stride = source
-        if stride <= 0:
-            return
-        candidates = np.arange(int(offset), len(x), int(stride), dtype=int)
-    elif isinstance(source, (list, np.ndarray, tuple)):
-        values = np.asarray(source)
-        if values.ndim != 1 or values.dtype.kind not in "iu":
-            return  # Preserve float/arc-length or other Matplotlib conventions.
-        candidates = np.arange(len(x))[values]
-    else:
+    vertices = ax.transData.transform(xy)
+    candidates = _marker_candidates(line, xy, vertices, ax)
+    if candidates is None or not len(candidates):
         return
-
-    if not len(candidates):
-        return
-    vertices = ax.transData.transform(xy[candidates])
+    candidates = np.unique(candidates.astype(int))
+    # Full marker radius and edge stroke, plus configurable breathing room.
+    inset = (inset_pt + line.get_markersize() / 2.
+             + line.get_markeredgewidth() / 2.) * ax.figure.dpi / 72.
     bbox = ax.bbox
-    # Diameter of matplotlib Line2D markers is measured in typographic points.
-    clearance = (inset_pt + line.get_markersize() / 2.0
-                 + line.get_markeredgewidth() / 2.0) * ax.figure.dpi / 72.0
-    interior = (
-        np.isfinite(vertices).all(axis=1)
-        & (vertices[:, 0] >= bbox.x0 + clearance)
-        & (vertices[:, 0] <= bbox.x1 - clearance)
-        & (vertices[:, 1] >= bbox.y0 + clearance)
-        & (vertices[:, 1] <= bbox.y1 - clearance)
+    screen = vertices[candidates]
+    valid = (
+        np.isfinite(screen).all(axis=1)
+        & (screen[:, 0] >= bbox.x0 + inset)
+        & (screen[:, 0] <= bbox.x1 - inset)
+        & (screen[:, 1] >= bbox.y0 + inset)
+        & (screen[:, 1] <= bbox.y1 - inset)
     )
-    accepted = np.asarray(candidates)[interior]
-    if source is None and len(accepted) > count:
-        # Sparse equally distributed *visible* marker locations for dense
-        # spline sampling. Data and line interpolation are untouched.
-        accepted = accepted[np.unique(np.linspace(
-            0, len(accepted) - 1, count, dtype=int
-        ))]
-    selected = accepted.astype(int).tolist()
+    candidates, screen = candidates[valid], screen[valid]
+    if not len(candidates):
+        selected = []
+    else:
+        # Sample evenly over the longest occupied *screen* axis. This avoids
+        # excessive symbols on highly oversampled or nonuniform spline grids.
+        span = np.ptp(screen, axis=0)
+        dimension = int(np.argmax(span))
+        order = np.argsort(screen[:, dimension], kind="stable")
+        candidates = candidates[order]
+        screen = screen[order]
+        # At least spacing_pt between marker centres, in physical points.
+        spacing_px = spacing_pt * ax.figure.dpi / 72.
+        room = max(1, 1 + int(span[dimension] // spacing_px))
+        target_count = min(count, room, len(candidates))
+        targets = np.linspace(screen[0, dimension],
+                              screen[-1, dimension], target_count)
+        chosen = []
+        for target in targets:
+            nearest = np.argsort(
+                np.abs(screen[:, dimension] - target), kind="stable"
+            )
+            for j in nearest:
+                point = screen[j]
+                if all(np.linalg.norm(point - q) >= spacing_px - 1e-7
+                       for q in chosen):
+                    chosen.append(point)
+                    break
+        selected = sorted(
+            int(candidates[np.argmin(
+                np.linalg.norm(screen - point, axis=1)
+            )])
+            for point in chosen
+        )
+
     line.set_markevery(selected)
     line._awesomefigures_elegant_applied = selected
+
+
+def thin_line_markers(
+    ax: Axes, *, marker_inset_pt: float = 6.0,
+    marker_count: int = 7, marker_min_spacing_pt: float = 38.0
+) -> Axes:
+    """Space all line markers across an Axes; do not change the line curves.
+
+    Called by both 'heri' and 'elegante' at export. For individual axes it may
+    also be called directly after plotting. Marker-only observation plots and
+    Matplotlib scatter collections remain unchanged.
+    """
+    if not isinstance(ax, Axes):
+        raise TypeError("ax must be a Matplotlib Axes.")
+    if (not math.isfinite(marker_inset_pt) or marker_inset_pt < 0
+            or not math.isfinite(marker_min_spacing_pt)
+            or marker_min_spacing_pt <= 0
+            or not isinstance(marker_count, int) or marker_count < 1):
+        raise ValueError(
+            "marker_inset_pt must be nonnegative; marker_count and "
+            "marker_min_spacing_pt must be positive."
+        )
+    if ax.name != "rectilinear":
+        return ax
+    for line in ax.lines:
+        _line_marker_indices(
+            line, ax, inset_pt=marker_inset_pt,
+            count=marker_count, spacing_pt=marker_min_spacing_pt
+        )
+    return ax
 
 
 def apply_elegant_axes(
@@ -159,8 +275,9 @@ def apply_elegant_axes(
     *,
     target_xticks: int = 6,
     target_yticks: int = 5,
-    marker_inset_pt: float = 4.0,
-    marker_count: int = 9,
+    marker_inset_pt: float = 6.0,
+    marker_count: int = 7,
+    marker_min_spacing_pt: float = 38.0,
     force_zero: bool = False,
     padding: float = 0.0,
 ) -> Axes:
@@ -174,14 +291,17 @@ def apply_elegant_axes(
     if not isinstance(ax, Axes):
         raise TypeError("ax must be a Matplotlib Axes.")
     if (not math.isfinite(marker_inset_pt) or marker_inset_pt < 0
-            or not isinstance(marker_count, int) or marker_count < 1):
-        raise ValueError("marker_inset_pt and marker_count must be nonnegative/positive.")
+            or not isinstance(marker_count, int) or marker_count < 1
+            or not math.isfinite(marker_min_spacing_pt)
+            or marker_min_spacing_pt <= 0):
+        raise ValueError("Marker spacing/count must be positive, inset nonnegative.")
     if not math.isfinite(padding) or padding < 0:
         raise ValueError("padding must be nonnegative and finite.")
     # Keep the user's tick preferences for subsequent automatic renders.
     ax._awesomefigures_elegant_options = dict(
         target_xticks=target_xticks, target_yticks=target_yticks,
         marker_inset_pt=marker_inset_pt, marker_count=marker_count,
+        marker_min_spacing_pt=marker_min_spacing_pt,
         force_zero=force_zero, padding=padding,
     )
     if (ax.name != "rectilinear"
@@ -214,6 +334,8 @@ def apply_elegant_axes(
 
     apply_one(ax.xaxis, ax.dataLim.intervalx, target_xticks)
     apply_one(ax.yaxis, ax.dataLim.intervaly, target_yticks)
-    for line in ax.lines:
-        _line_marker_indices(line, ax, inset_pt=marker_inset_pt, count=marker_count)
+    thin_line_markers(
+        ax, marker_inset_pt=marker_inset_pt,
+        marker_count=marker_count, marker_min_spacing_pt=marker_min_spacing_pt
+    )
     return ax
