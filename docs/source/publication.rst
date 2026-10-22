@@ -16,9 +16,9 @@ Install a LaTeX engine (TeX Live, MiKTeX or MacTeX), then run:
 
 .. code-block:: python
 
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   layout = cc.inspect_latex("paper/main.tex", engine="pdflatex")
+   layout = af.inspect_latex("paper/main.tex", engine="pdflatex")
    print(layout.columnwidth_pt)
    print(layout.textwidth_pt)
    print(layout.fontsize_pt)
@@ -32,7 +32,7 @@ If TeX is unavailable but your journal specifies the dimensions:
 
 .. code-block:: python
 
-   layout = cc.LatexLayout.from_dimensions(
+   layout = af.LatexLayout.from_dimensions(
        columnwidth_pt=245.0,
        textwidth_pt=510.0,
        fontsize_pt=10.0,
@@ -46,9 +46,9 @@ Create at column or text width
 .. code-block:: python
 
    import numpy as np
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   with cc.latex_style("paper/main.tex", width="column") as pub:
+   with af.latex_style("paper/main.tex", width="column") as pub:
        fig, ax = pub.subplots(height_ratio=0.65)
        x = np.linspace(0, 10, 160)
        ax.plot(x, np.sin(x))
@@ -83,9 +83,9 @@ in the Windows font manager. You do not need to download it again.
 
 .. code-block:: python
 
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   font = cc.find_latex_font("paper/main.tex", engine="pdflatex")
+   font = af.find_latex_font("paper/main.tex", engine="pdflatex")
    print(font.family_code, font.tex_font_name)
    print(font.outline_path, font.metrics_path)
    print(font.source)
@@ -99,7 +99,7 @@ virtual fonts and encodings. The diagnostic neither copies nor downloads fonts.
 
 .. code-block:: python
 
-   with cc.latex_style("paper/main.tex", engine="pdflatex") as pub:
+   with af.latex_style("paper/main.tex", engine="pdflatex") as pub:
        fig, ax = pub.subplots()
        ax.plot([0, 1, 2], [1, 3, 2])
        ax.set_xlabel("Time")
@@ -134,10 +134,10 @@ Adjust an existing Matplotlib figure
 
 .. code-block:: python
 
-   layout = cc.inspect_latex("paper/main.tex")
-   result = cc.fit_figure_to_latex(fig, layout, width="column")
+   layout = af.inspect_latex("paper/main.tex")
+   result = af.fit_figure_to_latex(fig, layout, width="column")
    print(result.passed, result.audit.warnings)
-   cc.save_figure(fig, "fitted.pdf", bbox_inches=None, pad_inches=0)
+   af.save_figure(fig, "fitted.pdf", bbox_inches=None, pad_inches=0)
 
 The fitter adjusts width and text hierarchy, runs tight_layout where
 applicable, and may increase figure height if clipping persists. It has a
@@ -149,7 +149,7 @@ Compile a proof PDF
 
 .. code-block:: python
 
-   cc.verify_latex_placement(
+   af.verify_latex_placement(
        "paper/main.tex",
        "paper/figures/signal.pdf",
        proof_pdf="paper/figures/signal_proof.pdf",
@@ -172,7 +172,7 @@ and math typesetting, export a PGF file:
 
 .. code-block:: python
 
-   with cc.latex_style("paper/main.tex", width="column") as pub:
+   with af.latex_style("paper/main.tex", width="column") as pub:
        fig, ax = pub.subplots()
        ax.plot([0, 1, 2], [2, 3, 1])
        pub.savefig(fig, "paper/figures/curve.pgf")
