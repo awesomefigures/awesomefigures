@@ -262,6 +262,11 @@ def thin_line_markers(
         )
     if ax.name != "rectilinear":
         return ax
+    # Ensure transforms use the final autoscaled limits. In the Heri preset,
+    # unlike Elegante, Matplotlib may defer autoscaling until Axes.draw().
+    # Without this, pixels measured before draw differ from the final canvas.
+    ax.get_xlim()
+    ax.get_ylim()
     for line in ax.lines:
         _line_marker_indices(
             line, ax, inset_pt=marker_inset_pt,
