@@ -117,3 +117,72 @@ def test_elegant_input_validation():
         cc.nice_tick_bounds(0, 10, steps=[0])
     with pytest.raises(ValueError):
         cc.apply_elegant_axes(plt.subplots()[1], marker_inset_pt=-2)
+
+
+@pytest.mark.parametrize("style_name", ["heri", "elegante"])
+@pytest.mark.parametrize("markevery", [None, 1, 2, 4, (0, 3), slice(None, None, 3)])
+def test_dense_triangles_have_legible_physical_spacing(style_name, markevery):
+    """Explicit markevery must not bypass the sparse-marker safety rule."""
+    cc.set_style(style_name, font="DejaVu Sans", use_tex=False,
+                 rasterize=False)
+    fig, ax = plt.subplots(figsize=(5.4, 3.0), dpi=100)
+    x = np.linspace(0, 100, 1401)
+    y = 0.8 * np.sin(x * .11)
+    (line,) = ax.plot(x, y, marker="^", markersize=7,
+                      markevery=markevery)
+    before = np.column_stack((line.get_xdata().copy(), line.get_ydata().copy()))
+    fig.canvas.draw()
+    chosen = line.get_markevery()
+    assert isinstance(chosen, list)
+    assert 1 <= len(chosen) <= 7
+    assert 0 not in chosen and len(x) - 1 not in chosen
+    screen = ax.transData.transform(before[chosen])
+    for i in range(len(screen)):
+        for j in range(i):
+            distance_pt = np.linalg.norm(screen[i] - screen[j]) * 72 / fig.dpi
+            assert distance_pt >= 37.99
+    np.testing.assert_array_equal(
+        np.column_stack((line.get_xdata(), line.get_ydata())), before
+    )
+
+
+def test_repeated_exports_and_resize_reuse_original_marker_candidates(tmp_path):
+    cc.set_style("elegante", font="DejaVu Sans", use_tex=False,
+                 rasterize=False)
+    fig, ax = plt.subplots(figsize=(6, 3), dpi=100)
+    x = np.linspace(0, 100, 901)
+    (line,) = ax.plot(x, np.sin(x / 20), marker="s", markevery=3)
+    fig.canvas.draw()
+    first = line.get_markevery()
+    assert 1 <= len(first) <= 7
+    fig.savefig(tmp_path / "sparse-markers.pdf")
+    assert line.get_markevery() == first
+    fig.set_size_inches(3.3, 2.6)
+    fig.canvas.draw()
+    narrower = line.get_markevery()
+    assert len(narrower) <= len(first)
+    assert len(narrower) <= 7
+
+
+def test_heri_does_not_thin_marker_only_observations():
+    cc.set_style("heri", font="DejaVu Sans", use_tex=False, rasterize=False)
+    fig, ax = plt.subplots()
+    x = np.arange(65)
+    (points,) = ax.plot(x, np.sqrt(x), marker="o", linestyle="None")
+    fig.canvas.draw()
+    assert points.get_markevery() is None
+    assert len(points.get_xdata()) == 65
+
+
+def test_user_can_adjust_marker_density_explicitly():
+    cc.set_style("elegante", font="DejaVu Sans", use_tex=False,
+                 rasterize=False)
+    fig, ax = plt.subplots(figsize=(6, 3))
+    x = np.linspace(0, 100, 500)
+    (line,) = ax.plot(x, np.sin(x / 13), marker="D")
+    cc.apply_elegant_axes(ax, marker_count=4, marker_min_spacing_pt=46,
+                          marker_inset_pt=7)
+    fig.canvas.draw()
+    assert 1 <= len(line.get_markevery()) <= 4
+    with pytest.raises(ValueError, match="spacing"):
+        cc.apply_elegant_axes(ax, marker_min_spacing_pt=0)
