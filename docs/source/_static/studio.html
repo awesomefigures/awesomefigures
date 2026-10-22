@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>contrastcolors Studio</title>
+<title>awesomefigures Studio</title>
 <style>
 :root{
   color-scheme:light;
@@ -125,7 +125,7 @@ input[type=color]{height:37px;width:43px;min-width:43px;border:1px solid var(--l
 <body>
 <div class="top">
   <div>
-    <h1>contrastcolors Studio</h1>
+    <h1>awesomefigures Studio</h1>
     <p class="subtitle">Design a contrast-controlled scientific plotting scheme, stress-test it in grayscale, tune transparency and style, then copy the exact Python setup.</p>
   </div>
 </div>
@@ -442,7 +442,7 @@ function applyContrastPreset(){
   if(preset==='manual')return;
   const n=clamp(Number($('nColors').value)||5,2,10);
   if(preset==='print-safe'){
-    // Same WCAG luminance endpoints as contrastcolors.print_safe_luminances:
+    // Same WCAG luminance endpoints as awesomefigures.print_safe_luminances:
     // fewer categories get a larger ratio, not nearly identical grays.
     const light=.50,dark=.035;
     $('startY').value=light.toFixed(2);
@@ -920,7 +920,7 @@ function getPresetName(){
 function paletteRegistration(name){
   const linePython=series.map(item=>lineDefs[item.line].py);
   return [
-    'cc.register_palette(',
+    'af.register_palette(',
     '    '+JSON.stringify(name)+',',
     '    hues='+pyList(series.map(item=>Number(item.hue)),false)+',',
     '    ratio='+Number($('ratio').value)+',',
@@ -1015,7 +1015,7 @@ function plotPython(type){
     ],
     pie:[
       'values = np.arange(1, len(scheme) + 1, dtype=float)',
-      'cc.pie_plot(values, ax=ax,',
+      'af.pie_plot(values, ax=ax,',
       '            colors=[style["color"] for style in scheme])',
       'ax.set(title="Pie chart with white wedge separators")',
     ],
@@ -1042,9 +1042,9 @@ function renderCode(){
   const code=[
     'import numpy as np',
     'import matplotlib.pyplot as plt',
-    'import contrastcolors as cc',
+    'import awesomefigures as af',
     '',
-    'cc.set_style(',
+    'af.set_style(',
     '    '+JSON.stringify($('styleName').value)+',',
     '    font='+JSON.stringify(font)+',',
     '    rasterize='+($('rasterize').value==='true'?'True':'False')+',',
@@ -1055,7 +1055,7 @@ function renderCode(){
       '# Original HEX values: '+builtinPalettes[activeBuiltin].slice(0,series.length).join(', ')
     ]:[paletteRegistration(name)]),
     '',
-    'scheme = cc.plot_scheme(',
+    'scheme = af.plot_scheme(',
     '    '+JSON.stringify(activeBuiltin||name)+',',
     ...(activeBuiltin?[
       '    n='+series.length+',',
@@ -1070,7 +1070,7 @@ function renderCode(){
     'fig, ax = plt.subplots(figsize=(8.2, 4.2))',
     ...plotPython(plotType),
     'fig.tight_layout()',
-    'cc.save_figure(fig, "figure.pdf", dpi='+Math.round(Number($('dpi').value)||600)+')',
+    'af.save_figure(fig, "figure.pdf", dpi='+Math.round(Number($('dpi').value)||600)+')',
   ].join('\n');
   $('code').value=code;
 }
@@ -1124,7 +1124,7 @@ $('copyCode').addEventListener('click',async()=>{
   if(!ok){$('code').focus();$('code').select();try{ok=document.execCommand('copy')}catch(e){}}
   $('copyStatus').textContent=ok?'Copied to clipboard.':'Select the code and copy it manually.';
 });
-const STORAGE_KEY='contrastcolors.studio.designs.v2';
+const STORAGE_KEY='awesomefigures.studio.designs.v2';
 function designSnapshot(){
   return {
     version:2,
@@ -1235,7 +1235,7 @@ function applyDesign(raw){
 }
 function loadStorage(){
   try{
-    const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');
+    const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||localStorage.getItem('contrastcolors.studio.designs.v2')||'{}');
     return data&&typeof data==='object'&&!Array.isArray(data)?data:{};
   }catch(e){
     $('presetStatus').textContent='Browser storage unavailable. Use JSON export/import instead.';
@@ -1301,21 +1301,21 @@ $('downloadPy').addEventListener('click',()=>{
   const name=getPresetName();
   if(!name){$('presetStatus').textContent='Enter a valid Python preset name first.';return}
   const content=[
-    '"""contrastcolors palette selection exported from Palette Studio."""',
-    'import contrastcolors as cc',
+    '"""awesomefigures palette selection exported from Palette Studio."""',
+    'import awesomefigures as af',
     '',
     ...(activeBuiltin
-      ? ['# Built-in scheme: original RGB values are supplied by contrastcolors.',
-         'colors = cc.named_palette('+JSON.stringify(activeBuiltin)+', n='+series.length+')',
-         'scheme = cc.plot_scheme('+JSON.stringify(activeBuiltin)+', n='+series.length+',',
+      ? ['# Built-in scheme: original RGB values are supplied by awesomefigures.',
+         'colors = af.named_palette('+JSON.stringify(activeBuiltin)+', n='+series.length+')',
+         'scheme = af.plot_scheme('+JSON.stringify(activeBuiltin)+', n='+series.length+',',
          '    markers='+pyList(series.map(item=>item.marker),true)+',',
          '    linestyles=['+series.map(item=>lineDefs[item.line].py).join(', ')+'])']
       : [paletteRegistration(name)]),
     '',
     '# Import this module once before requesting its named palette:',
     '# import '+name,
-    '# colors = cc.color_palette('+JSON.stringify(name)+')',
-    '# scheme = cc.plot_scheme('+JSON.stringify(name)+')',
+    '# colors = af.color_palette('+JSON.stringify(name)+')',
+    '# scheme = af.plot_scheme('+JSON.stringify(name)+')',
     ''
   ].join('\n');
   downloadFile(name+'.py',content,'text/x-python');
@@ -1328,7 +1328,7 @@ if(typeof ResizeObserver!=='undefined'){
   const notifyHeight=()=>{
     if(window.parent!==window){
       window.parent.postMessage(
-        {type:'contrastcolors-studio-height',height:document.documentElement.scrollHeight},
+        {type:'awesomefigures-studio-height',height:document.documentElement.scrollHeight},
         window.location.origin
       );
     }

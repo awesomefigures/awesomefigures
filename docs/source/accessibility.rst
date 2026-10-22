@@ -6,7 +6,7 @@ Scientific plots should not rely on color alone.
 The Heri Matplotlib style automatically cycles distinct colors, markers,
 and linestyles for successive plain line plots. Repeated scatter calls get
 different group markers. Explicit choices always take precedence.
-For reproducible scatter groups, use contrastcolors.scatter_scheme.
+For reproducible scatter groups, use awesomefigures.scatter_scheme.
 
 The accessibility panel has six views:
 
@@ -28,11 +28,11 @@ Example
 
 .. code-block:: python
 
-   import contrastcolors as cc
+   import awesomefigures as af
    import matplotlib.pyplot as plt
    import numpy as np
 
-   cc.set_style("heri", font="DejaVu Sans")
+   af.set_style("heri", font="DejaVu Sans")
    x = np.linspace(0, 8, 150)
    fig, ax = plt.subplots()
    for i in range(4):
@@ -40,8 +40,8 @@ Example
    ax.legend()
    fig.tight_layout()
 
-   cc.show_accessibility_panel(fig)
-   cc.save_accessibility_panel(fig, "fig_accessibility.png")
+   af.show_accessibility_panel(fig)
+   af.save_accessibility_panel(fig, "fig_accessibility.png")
 
 The original figure is not recolored. The preview includes legends, text,
 axes, and heatmaps. For large plots, use max_width=650 to limit size.
@@ -49,8 +49,8 @@ The ncols and severity options configure layout and CVD severity.
 
 .. code-block:: python
 
-   image = cc.simulate_figure(fig, "tritanopia")
-   variants = cc.figure_variants(fig, modes=("original", "grayscale"))
+   image = af.simulate_figure(fig, "tritanopia")
+   variants = af.figure_variants(fig, modes=("original", "grayscale"))
 
 Grouped scatter plots
 ---------------------
@@ -59,7 +59,7 @@ For categories, vary color and marker by group, not by observation.
 
 .. code-block:: python
 
-   schemes = cc.scatter_scheme(
+   schemes = af.scatter_scheme(
        [55, 20, 145, 210, 290], ratio=1.2, start_luminance=0.72
    )
    for (xs, ys), style in zip(groups, schemes):
