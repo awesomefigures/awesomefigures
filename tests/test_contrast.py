@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from contrastcolors import luminance_ladder, luminance_contrast
+from awesomefigures import luminance_ladder, luminance_contrast
 
 
 def test_luminance_ladder_has_constant_ratio():

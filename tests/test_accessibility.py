@@ -4,14 +4,14 @@ matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
 import numpy as np
 import pytest
-import contrastcolors as cc
+import awesomefigures as af
 
 
 @pytest.fixture
 def small_fig():
     fig, ax = plt.subplots(figsize=(2.8, 2.0), dpi=70)
     x = np.linspace(0, 6, 80)
-    for i, style in enumerate(cc.plot_scheme(
+    for i, style in enumerate(af.plot_scheme(
         [20, 140, 260], ratio=1.2, start_luminance=.75
     )):
         ax.plot(x, np.sin(x+i), **style)
@@ -21,9 +21,9 @@ def small_fig():
 
 
 def test_six_modes(small_fig):
-    original = cc.figure_to_rgba(small_fig, max_width=170)
-    views = cc.figure_variants(small_fig, max_width=170)
-    assert tuple(views) == cc.DEFAULT_ACCESSIBILITY_MODES
+    original = af.figure_to_rgba(small_fig, max_width=170)
+    views = af.figure_variants(small_fig, max_width=170)
+    assert tuple(views) == af.DEFAULT_ACCESSIBILITY_MODES
     for output in views.values():
         assert output.shape == original.shape
         assert output.dtype == np.uint8
@@ -33,15 +33,15 @@ def test_six_modes(small_fig):
 def test_color_vision_simulations_preserve_alpha():
     src = np.array([[[255, 0, 0, 90], [0, 255, 0, 255]]], dtype=np.uint8)
     for mode in ("deuteranopia", "protanopia", "tritanopia"):
-        target = cc.simulate_cvd_image(src, mode)
+        target = af.simulate_cvd_image(src, mode)
         np.testing.assert_array_equal(src[..., 3], target[..., 3])
         assert np.any(src[..., :3] != target[..., :3])
 
 
 def test_grayscale_and_print():
     img = np.array([[[255, 0, 0, 130]]], dtype=np.uint8)
-    for transformed in (cc.to_grayscale_image(img),
-                        cc.to_print_stress_image(img)):
+    for transformed in (af.to_grayscale_image(img),
+                        af.to_print_stress_image(img)):
         assert transformed[0, 0, 0] == transformed[0, 0, 1]
         assert transformed[0, 0, 1] == transformed[0, 0, 2]
         assert transformed[0, 0, 3] == 130
@@ -49,30 +49,30 @@ def test_grayscale_and_print():
 
 def test_panel_does_not_modify_original(small_fig, tmp_path):
     count = len(small_fig.axes[0].lines)
-    panel, axes = cc.show_accessibility_panel(small_fig, max_width=160)
+    panel, axes = af.show_accessibility_panel(small_fig, max_width=160)
     assert len(axes) == 6
     assert len(small_fig.axes[0].lines) == count
     plt.close(panel)
     target = tmp_path / "panel.png"
-    assert cc.save_accessibility_panel(small_fig, target, max_width=160) == target
+    assert af.save_accessibility_panel(small_fig, target, max_width=160) == target
     assert target.is_file()
 
 
 def test_bad_inputs(small_fig):
     with pytest.raises(ValueError):
-        cc.simulate_figure(small_fig, "invalid")
+        af.simulate_figure(small_fig, "invalid")
     with pytest.raises(ValueError):
-        cc.to_grayscale_image(np.zeros((3, 2)))
+        af.to_grayscale_image(np.zeros((3, 2)))
     with pytest.raises(ValueError):
-        cc.simulate_cvd_image(np.zeros((1, 1, 3), dtype=np.uint8),
+        af.simulate_cvd_image(np.zeros((1, 1, 3), dtype=np.uint8),
                               "protanopia", severity=101)
 
 
 def test_scheme_and_automatic_identifiers():
-    scheme = cc.scatter_scheme([20, 140, 280], ratio=1.2, start_luminance=.72)
+    scheme = af.scatter_scheme([20, 140, 280], ratio=1.2, start_luminance=.72)
     assert all(set(item) == {"color", "marker"} for item in scheme)
     assert len(set(x["marker"] for x in scheme)) == 3
-    with cc.style_context("heri", font="DejaVu Sans"):
+    with af.style_context("heri", font="DejaVu Sans"):
         fig, ax = plt.subplots()
         for i in range(3):
             ax.plot([0, 1], [i, i+1])
@@ -86,7 +86,7 @@ def test_scheme_and_automatic_identifiers():
 
 @pytest.mark.parametrize("ncols", [2, 3])
 def test_panel_titles_centered_just_above_the_rendered_image(small_fig, ncols):
-    panel, image_axes = cc.show_accessibility_panel(
+    panel, image_axes = af.show_accessibility_panel(
         small_fig, ncols=ncols, max_width=220,
         figsize=(10, 12) if ncols == 2 else (13, 8),
         title_fontsize=10, title_pad=0.01,
@@ -111,23 +111,23 @@ def test_panel_titles_centered_just_above_the_rendered_image(small_fig, ncols):
 
 def test_panel_rejects_unusable_title_spacing(small_fig):
     with pytest.raises(ValueError):
-        cc.show_accessibility_panel(small_fig, title_fontsize=0)
+        af.show_accessibility_panel(small_fig, title_fontsize=0)
     with pytest.raises(ValueError):
-        cc.show_accessibility_panel(small_fig, title_pad=-1)
+        af.show_accessibility_panel(small_fig, title_pad=-1)
 
 
 @pytest.mark.parametrize("ncols", [2, 3])
 def test_vector_dashboard_has_no_raster_images_and_correct_fonts(ncols, tmp_path):
     import matplotlib.collections as collections
     import matplotlib as mpl
-    with cc.style_context("heri", font="DejaVu Sans", rasterize=False):
+    with af.style_context("heri", font="DejaVu Sans", rasterize=False):
         source, ax = plt.subplots()
         x = np.arange(5)
         for i, color in enumerate(("#E69F00", "#0072B2", "#009E73")):
             ax.plot(x, x + i, label=f"Series {i+1}", marker="o",
                     color=color, linestyle=("-", "--", ":")[i])
         ax.set(xlabel="Time", ylabel="Response")
-        panel, views = cc.show_vector_accessibility_panel(
+        panel, views = af.show_vector_accessibility_panel(
             source, ncols=ncols, figsize=(7, 8 if ncols == 2 else 4.5),
             axis_label_fontsize=10, title_fontsize=10,
         )
@@ -156,7 +156,7 @@ def test_vector_scatter_keeps_marker_geometry_alpha_and_white_edges():
         ax.scatter([0, 1], [i, i + 1], marker=marker, c=color, s=45,
                    alpha=.62, edgecolors="white", linewidths=.22,
                    label=f"Group {i+1}")
-    dest, axs = cc.show_vector_accessibility_panel(
+    dest, axs = af.show_vector_accessibility_panel(
         fig, figsize=(7, 8), ncols=2,
     )
     for a in axs:
@@ -185,7 +185,7 @@ def test_vector_scatter_does_not_fill_entire_axes_with_marker_paths():
         ax.scatter(x, y, s=48, marker=marker, color=color, alpha=.68,
                    edgecolors="white", linewidths=.22, label=f"Group {i+1}")
 
-    panel, views = cc.show_vector_accessibility_panel(
+    panel, views = af.show_vector_accessibility_panel(
         source, modes=("original",), ncols=1, figsize=(3.5, 3.4)
     )
     panel.canvas.draw()
@@ -206,7 +206,7 @@ def test_vector_scatter_does_not_fill_entire_axes_with_marker_paths():
 def test_vector_print_stress_restores_gray_paper_background():
     source, ax = plt.subplots()
     ax.plot([0, 1], [0, 1], color="#0072B2")
-    panel, axes = cc.show_vector_accessibility_panel(
+    panel, axes = af.show_vector_accessibility_panel(
         source, modes=("original", "grayscale", "print"), ncols=3
     )
     np.testing.assert_allclose(axes[0].get_facecolor()[:3], (1, 1, 1))
@@ -219,7 +219,7 @@ def test_vector_print_stress_restores_gray_paper_background():
 
 def test_compact_vector_scatter_dashboard_has_no_clipped_labels():
     """Physical 452 TeX pt wide 3 x 2 publication layout must pass audits."""
-    layout = cc.LatexLayout.from_dimensions(
+    layout = af.LatexLayout.from_dimensions(
         columnwidth_pt=217.69, textwidth_pt=452, fontsize_pt=10
     )
     source, ax = plt.subplots()
@@ -230,8 +230,8 @@ def test_compact_vector_scatter_dashboard_has_no_clipped_labels():
                    marker=marker, color=color, s=48, alpha=.68,
                    edgecolors="white", linewidths=.22, label=f"Group {i+1}")
     ax.set(xlabel="Measurement A", ylabel="Measurement B")
-    with cc.latex_style(layout, width="text", rasterize=False) as pub:
-        panel, _ = cc.show_vector_accessibility_panel(
+    with af.latex_style(layout, width="text", rasterize=False) as pub:
+        panel, _ = af.show_vector_accessibility_panel(
             source, ncols=3,
             figsize=(layout.width_inches("text"), 4.05),
             axis_label_fontsize=10, title_fontsize=10,
@@ -247,7 +247,7 @@ def test_vector_dashboard_rejects_unsupported_heatmaps():
     fig, ax = plt.subplots()
     ax.imshow(np.ones((2, 3)))
     with pytest.raises(ValueError, match="no line or scatter"):
-        cc.show_vector_accessibility_panel(fig)
+        af.show_vector_accessibility_panel(fig)
     plt.close(fig)
 
 
@@ -261,12 +261,12 @@ def test_vector_pdf_scatter_contains_no_bitmap_objects(tmp_path):
                    color=color, s=48, alpha=.68,
                    edgecolors="white", linewidths=.22,
                    label=f"G{i}")
-    with cc.latex_style(
-        cc.LatexLayout.from_dimensions(
+    with af.latex_style(
+        af.LatexLayout.from_dimensions(
             columnwidth_pt=220, textwidth_pt=452, fontsize_pt=10
         ), width="text", rasterize=False,
     ) as pub:
-        panel, _ = cc.show_vector_accessibility_panel(
+        panel, _ = af.show_vector_accessibility_panel(
             fig, ncols=3,
             figsize=(pub.layout.width_inches("text"), 4.05),
             axis_label_fontsize=10,

@@ -5,13 +5,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 
-import contrastcolors as cc
+import awesomefigures as af
 
 
 @pytest.fixture(autouse=True)
 def cleanup():
     yield
-    cc.set_style("default")
+    af.set_style("default")
     plt.close("all")
 
 
@@ -23,7 +23,7 @@ def cleanup():
     ((0.00012, 0.00034), 5),
 ])
 def test_nice_ticks_cover_values_and_include_both_endpoints(bounds, target):
-    lo, hi, ticks = cc.nice_tick_bounds(*bounds, target_ticks=target)
+    lo, hi, ticks = af.nice_tick_bounds(*bounds, target_ticks=target)
     assert lo <= bounds[0] < bounds[1] <= hi
     assert ticks[0] == lo and ticks[-1] == hi
     np.testing.assert_allclose(np.diff(ticks), np.diff(ticks)[0], atol=1e-12)
@@ -31,14 +31,14 @@ def test_nice_ticks_cover_values_and_include_both_endpoints(bounds, target):
 
 
 def test_pretty_exact_data_endpoints_preferred():
-    lo, hi, ticks = cc.nice_tick_bounds(0, 100, target_ticks=6)
+    lo, hi, ticks = af.nice_tick_bounds(0, 100, target_ticks=6)
     assert (lo, hi) == (0, 100)
     np.testing.assert_allclose(ticks, [0, 20, 40, 60, 80, 100])
 
 
 def test_elegante_auto_finishes_axes_during_draw():
-    assert "elegante" in cc.available_styles()
-    cc.set_style("elegante", font="DejaVu Sans", use_tex=False, rasterize=False)
+    assert "elegante" in af.available_styles()
+    af.set_style("elegante", font="DejaVu Sans", use_tex=False, rasterize=False)
     fig, ax = plt.subplots(figsize=(7, 4))
     x = np.linspace(0, 100, 301)
     y = np.sin(x / 19)
@@ -61,7 +61,7 @@ def test_elegante_auto_finishes_axes_during_draw():
 
 
 def test_inset_markers_respect_both_axes_and_keep_full_line():
-    cc.set_style("elegante", font="DejaVu Sans", use_tex=False, rasterize=False)
+    af.set_style("elegante", font="DejaVu Sans", use_tex=False, rasterize=False)
     fig, ax = plt.subplots(figsize=(5, 3))
     x = np.linspace(0, 10, 101)
     y = np.sin(x) * 1.0
@@ -78,7 +78,7 @@ def test_inset_markers_respect_both_axes_and_keep_full_line():
 
 
 def test_manual_limits_are_respected_and_still_inset_markers():
-    cc.set_style("elegante", font="DejaVu Sans", use_tex=False)
+    af.set_style("elegante", font="DejaVu Sans", use_tex=False)
     fig, ax = plt.subplots()
     ax.plot(np.linspace(0, 10, 60), np.sin(np.linspace(0, 10, 60)))
     ax.set_xlim(-2.3, 12.7)
@@ -87,7 +87,7 @@ def test_manual_limits_are_respected_and_still_inset_markers():
 
 
 def test_scatter_only_extrema_are_not_clipped_or_hidden():
-    cc.set_style("elegante", font="DejaVu Sans", use_tex=False, rasterize=False)
+    af.set_style("elegante", font="DejaVu Sans", use_tex=False, rasterize=False)
     fig, ax = plt.subplots()
     points = ax.scatter([0, 100], [0, 100], s=90)
     fig.canvas.draw()
@@ -97,7 +97,7 @@ def test_scatter_only_extrema_are_not_clipped_or_hidden():
 
 
 def test_style_context_restores_automatic_finishing():
-    with cc.style_context("elegante", font="DejaVu Sans", use_tex=False):
+    with af.style_context("elegante", font="DejaVu Sans", use_tex=False):
         fig, ax = plt.subplots()
         ax.plot(np.linspace(0, 10, 30), np.sin(np.linspace(0, 10, 30)))
         fig.canvas.draw()
@@ -110,10 +110,10 @@ def test_style_context_restores_automatic_finishing():
 
 def test_elegant_input_validation():
     with pytest.raises(ValueError):
-        cc.nice_tick_bounds(0, 10, target_ticks=1)
+        af.nice_tick_bounds(0, 10, target_ticks=1)
     with pytest.raises(ValueError):
-        cc.nice_tick_bounds(0, 10, padding=-1)
+        af.nice_tick_bounds(0, 10, padding=-1)
     with pytest.raises(ValueError):
-        cc.nice_tick_bounds(0, 10, steps=[0])
+        af.nice_tick_bounds(0, 10, steps=[0])
     with pytest.raises(ValueError):
-        cc.apply_elegant_axes(plt.subplots()[1], marker_inset_pt=-2)
+        af.apply_elegant_axes(plt.subplots()[1], marker_inset_pt=-2)

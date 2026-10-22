@@ -1,6 +1,6 @@
 from pathlib import Path
 
-import contrastcolors as cc
+import awesomefigures as af
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -13,5 +13,5 @@ def test_every_public_root_symbol_is_mentioned_in_docs():
         for path in DOCS.rglob("*.rst")
     )
 
-    missing = sorted(name for name in cc.__all__ if name not in documentation)
+    missing = sorted(name for name in af.__all__ if name not in documentation)
     assert not missing, f"Public API missing from documentation: {missing}"
