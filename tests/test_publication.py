@@ -11,8 +11,8 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pytest
 
-import contrastcolors as cc
-import contrastcolors.publication as pub
+import awesomefigures as cc
+import awesomefigures.publication as pub
 
 
 @pytest.fixture(autouse=True)
