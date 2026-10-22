@@ -4,16 +4,16 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pytest
 
-import contrastcolors as cc
+import awesomefigures as af
 
 
 def teardown_function():
-    cc.set_style("default")
+    af.set_style("default")
     plt.close("all")
 
 
 def test_set_style_heri_matches_wti_publication_rcparams():
-    cc.set_style("heri", use_tex=False)
+    af.set_style("heri", use_tex=False)
 
     assert mpl.rcParams["axes.spines.top"] is False
     assert mpl.rcParams["axes.spines.right"] is False
@@ -29,19 +29,19 @@ def test_set_style_heri_matches_wti_publication_rcparams():
 
 
 def test_heri_palette_matches_wti_publication_palette():
-    assert cc.HERI_PALETTE == (
+    assert af.HERI_PALETTE == (
         "#97001c",
         "#0083f9",
         "#00b49c",
         "#ffc600",
         "#f198ff",
     )
-    assert cc.HERI_IRIDESCENT_HEX[0] == "#FEFBE9"
-    assert cc.HERI_IRIDESCENT_HEX[-1] == "#46353A"
+    assert af.HERI_IRIDESCENT_HEX[0] == "#FEFBE9"
+    assert af.HERI_IRIDESCENT_HEX[-1] == "#46353A"
 
 
 def test_heri_style_keeps_lines_vector_and_rasterizes_dense_artists():
-    cc.set_style("heri", use_tex=False, rasterize=True)
+    af.set_style("heri", use_tex=False, rasterize=True)
     fig, ax = plt.subplots()
     (line,) = ax.plot([0, 1], [0, 1])
     points = ax.scatter([0, 1], [1, 0])
@@ -53,7 +53,7 @@ def test_heri_style_keeps_lines_vector_and_rasterizes_dense_artists():
 
 
 def test_rasterization_can_be_disabled():
-    cc.set_style("heri", use_tex=False, rasterize=False)
+    af.set_style("heri", use_tex=False, rasterize=False)
     fig, ax = plt.subplots()
     points = ax.scatter([0, 1], [0, 1])
 
@@ -61,28 +61,28 @@ def test_rasterization_can_be_disabled():
 
 
 def test_custom_font_can_be_selected():
-    cc.set_style("heri", font="Arial", use_tex=False)
+    af.set_style("heri", font="Arial", use_tex=False)
     assert mpl.rcParams["font.family"] == ["Arial"]
     assert mpl.rcParams["text.usetex"] is False
 
 
 def test_custom_font_auto_mode_avoids_latex():
-    cc.set_style("heri", font="Arial", use_tex="auto")
+    af.set_style("heri", font="Arial", use_tex="auto")
     assert mpl.rcParams["font.family"] == ["Arial"]
     assert mpl.rcParams["text.usetex"] is False
 
 
 def test_custom_font_cannot_be_forced_through_utopia_tex_stack():
     with pytest.raises(ValueError):
-        cc.set_style("heri", font="Arial", use_tex=True)
+        af.set_style("heri", font="Arial", use_tex=True)
 
 
 def test_save_figure_defaults_to_pdf(tmp_path: Path):
-    cc.set_style("heri", use_tex=False)
+    af.set_style("heri", use_tex=False)
     fig, ax = plt.subplots()
     ax.scatter([0, 1], [1, 0])
 
-    path = cc.save_figure(fig, tmp_path / "example")
+    path = af.save_figure(fig, tmp_path / "example")
     assert path.suffix == ".pdf"
     assert path.exists()
     assert path.stat().st_size > 0
@@ -90,7 +90,7 @@ def test_save_figure_defaults_to_pdf(tmp_path: Path):
 
 def test_style_context_restores_previous_rcparams():
     before = mpl.rcParams["axes.spines.top"]
-    with cc.style_context("heri", font="Arial", use_tex=False):
+    with af.style_context("heri", font="Arial", use_tex=False):
         assert mpl.rcParams["axes.spines.top"] is False
         assert mpl.rcParams["font.family"] == ["Arial"]
     assert mpl.rcParams["axes.spines.top"] == before
@@ -98,13 +98,13 @@ def test_style_context_restores_previous_rcparams():
 
 def test_unknown_style_fails():
     with pytest.raises(ValueError):
-        cc.set_style("not-a-style")
+        af.set_style("not-a-style")
 
 
 def test_default_heri_palette_prioritizes_grayscale_separation():
-    from contrastcolors.color_spaces import relative_luminance
+    from awesomefigures.color_spaces import relative_luminance
 
-    cc.set_style("heri", font="DejaVu Sans", use_tex=False)
+    af.set_style("heri", font="DejaVu Sans", use_tex=False)
     rendered = mpl.rcParams["axes.prop_cycle"].by_key()["color"]
     first_three = [relative_luminance(color) for color in rendered[:3]]
     assert first_three[0] > first_three[1] > first_three[2]
@@ -114,7 +114,7 @@ def test_default_heri_palette_prioritizes_grayscale_separation():
 
 
 def test_legacy_style_palette_is_still_selectable():
-    cc.set_style("heri", font="DejaVu Sans", use_tex=False, palette="legacy")
-    assert mpl.rcParams["axes.prop_cycle"].by_key()["color"] == list(cc.HERI_PALETTE)
+    af.set_style("heri", font="DejaVu Sans", use_tex=False, palette="legacy")
+    assert mpl.rcParams["axes.prop_cycle"].by_key()["color"] == list(af.HERI_PALETTE)
     with pytest.raises(ValueError):
-        cc.set_style("heri", palette="unknown")
+        af.set_style("heri", palette="unknown")

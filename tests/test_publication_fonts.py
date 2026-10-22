@@ -4,19 +4,19 @@ matplotlib.use("Agg", force=True)
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-import contrastcolors as cc
-import contrastcolors.publication as publication
+import awesomefigures as af
+import awesomefigures.publication as publication
 
 
 def test_find_tex_font_metrics_only(monkeypatch, tmp_path):
     metrics = tmp_path / "pplr7t.tfm"
     metrics.write_bytes(b"metric")
     monkeypatch.setattr(publication, "inspect_latex", lambda *args, **kwargs:
-        cc.LatexLayout.from_dimensions(columnwidth_pt=240, textwidth_pt=500,
+        af.LatexLayout.from_dimensions(columnwidth_pt=240, textwidth_pt=500,
             fontsize_pt=10, font_family="ppl", font_name="pplr7t at 10pt"))
     monkeypatch.setattr(publication, "_kpsewhich",
         lambda filename: metrics if filename == "pplr7t.tfm" else None)
-    result = cc.find_latex_font(tmp_path / "paper.tex")
+    result = af.find_latex_font(tmp_path / "paper.tex")
     assert result.tex_font_name == "pplr7t at 10pt"
     assert result.metrics_path == metrics
     assert result.outline_path is None
@@ -27,20 +27,20 @@ def test_find_tex_font_outline(monkeypatch, tmp_path):
     file = tmp_path / "cmr10.pfb"
     file.write_bytes(b"outline")
     monkeypatch.setattr(publication, "inspect_latex", lambda *args, **kwargs:
-        cc.LatexLayout.from_dimensions(columnwidth_pt=240, textwidth_pt=500,
+        af.LatexLayout.from_dimensions(columnwidth_pt=240, textwidth_pt=500,
             fontsize_pt=10, font_family="cmr", font_name="cmr10 at 10pt"))
     monkeypatch.setattr(publication, "_kpsewhich",
         lambda filename: file if filename == "cmr10.pfb" else None)
-    result = cc.find_latex_font(tmp_path / "paper.tex")
+    result = af.find_latex_font(tmp_path / "paper.tex")
     assert result.outline_path == file
     assert result.has_font_file
 
 
 def test_pgf_uses_manuscript_engine_not_os_font(monkeypatch, tmp_path):
-    layout = cc.LatexLayout.from_dimensions(
+    layout = af.LatexLayout.from_dimensions(
         columnwidth_pt=245, textwidth_pt=510, fontsize_pt=10)
     before = bool(mpl.rcParams["pgf.rcfonts"])
-    with cc.latex_style(layout, engine="pdflatex") as pub:
+    with af.latex_style(layout, engine="pdflatex") as pub:
         fig, ax = pub.subplots()
         ax.plot([0, 1], [1, 2])
         calls = []
