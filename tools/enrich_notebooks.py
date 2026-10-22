@@ -20,7 +20,7 @@ def is_plot_cell(cell) -> bool:
 def is_accessibility_cell(cell) -> bool:
     return cell.cell_type == "code" and (
         "accessibility-panel" in cell.metadata.get("tags", ())
-        or "cc.show_accessibility_panel(" in cell.source
+        or "af.show_accessibility_panel(" in cell.source
     )
 
 
@@ -36,7 +36,7 @@ def enrich_notebook(notebook) -> int:
             continue
         figure = "ax.figure" if "grid.plot(" in cell.source and "plt.subplots(" not in cell.source else "fig"
         panel = new_code_cell(
-            "cc.show_accessibility_panel(" + figure + ", max_width=640)\n"
+            "af.show_accessibility_panel(" + figure + ", max_width=640)\n"
             "plt.show()"
         )
         panel.metadata["tags"] = ["accessibility-panel"]

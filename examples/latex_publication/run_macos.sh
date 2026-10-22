@@ -45,11 +45,11 @@ for package in lmodern.sty pgf.sty tikz.sty titlesec.sty fancyhdr.sty microtype.
 done
 
 if command -v conda >/dev/null 2>&1; then
-  if ! conda run -n contrastcolors python -c "import sys" >/dev/null 2>&1; then
-    echo "Creating the contrastcolors Conda environment..."
-    conda env create --name contrastcolors --file "$ROOT/environment.yml"
+  if ! conda run -n awesomefigures python -c "import sys" >/dev/null 2>&1; then
+    echo "Creating the awesomefigures Conda environment..."
+    conda env create --name awesomefigures --file "$ROOT/environment.yml"
   fi
-  PY=(conda run --no-capture-output -n contrastcolors python)
+  PY=(conda run --no-capture-output -n awesomefigures python)
 else
   if ! command -v python3 >/dev/null 2>&1; then
     echo "Python 3.10+ or Miniforge is required." >&2
