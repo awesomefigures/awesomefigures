@@ -90,6 +90,7 @@ _RASTERIZE_DENSE = False
 _ACCESSIBLE_SCATTER = False
 _ELEGANT_ENABLED = False
 _ELEGANT_DRAW_PATCHED = False
+_SPARSE_LINE_MARKERS = False
 
 
 def _install_elegant_draw() -> None:
@@ -110,6 +111,9 @@ def _install_elegant_draw() -> None:
             from .elegant import apply_elegant_axes
             opts = getattr(self, "_awesomefigures_elegant_options", {})
             apply_elegant_axes(self, **opts)
+        elif _SPARSE_LINE_MARKERS:
+            from .elegant import thin_line_markers
+            thin_line_markers(self)
         return original_draw(self, renderer)
 
     Axes.draw = draw
@@ -378,13 +382,14 @@ def set_style(
     With rasterize=True, only dense artists are rasterized. Ordinary plot
     lines, errorbars, axes, text, ticks, legends, and annotations remain vector.
     """
-    global _RASTERIZE_DENSE, _ACCESSIBLE_SCATTER, _ELEGANT_ENABLED
+    global _RASTERIZE_DENSE, _ACCESSIBLE_SCATTER, _ELEGANT_ENABLED, _SPARSE_LINE_MARKERS
 
     name = str(style).strip().lower()
     if name in {"default", "matplotlib"}:
         _RASTERIZE_DENSE = False
         _ACCESSIBLE_SCATTER = False
         _ELEGANT_ENABLED = False
+        _SPARSE_LINE_MARKERS = False
         mpl.rcdefaults()
         return
 
@@ -418,8 +423,8 @@ def set_style(
     _RASTERIZE_DENSE = bool(rasterize)
     _ACCESSIBLE_SCATTER = True
     _ELEGANT_ENABLED = name == "elegante"
-    if _ELEGANT_ENABLED:
-        _install_elegant_draw()
+    _SPARSE_LINE_MARKERS = True
+    _install_elegant_draw()
 
     font_key = font.strip().lower()
     if use_tex == "auto":
@@ -461,12 +466,13 @@ def style_context(
     palette: str = "print-safe",
 ) -> Iterator[None]:
     """Temporarily apply a style and restore previous Matplotlib state."""
-    global _RASTERIZE_DENSE, _ACCESSIBLE_SCATTER, _ELEGANT_ENABLED
+    global _RASTERIZE_DENSE, _ACCESSIBLE_SCATTER, _ELEGANT_ENABLED, _SPARSE_LINE_MARKERS
 
     previous = mpl.rcParams.copy()
     previous_rasterize = _RASTERIZE_DENSE
     previous_scatter = _ACCESSIBLE_SCATTER
     previous_elegant = _ELEGANT_ENABLED
+    previous_sparse = _SPARSE_LINE_MARKERS
     try:
         set_style(
             style,
@@ -480,6 +486,7 @@ def style_context(
         _RASTERIZE_DENSE = previous_rasterize
         _ACCESSIBLE_SCATTER = previous_scatter
         _ELEGANT_ENABLED = previous_elegant
+        _SPARSE_LINE_MARKERS = previous_sparse
         mpl.rcParams.update(previous)
 
 
