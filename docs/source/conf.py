@@ -3,7 +3,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath("../../src"))
 
-project = "contrastcolors"
+project = "awesomefigures"
 author = "Heriberto Espino Montelongo"
 release = "0.1.0"
 
@@ -22,12 +22,12 @@ autodoc_member_order = "bysource"
 autodoc_typehints = "description"
 
 html_theme = "pydata_sphinx_theme"
-html_title = "contrastcolors"
+html_title = "awesomefigures"
 html_static_path = ["_static"]
 html_css_files = ["custom.css"]
 
 html_theme_options = {
-    "logo": {"text": "contrastcolors"},
+    "logo": {"text": "awesomefigures"},
     "navbar_align": "content",
     "header_links_before_dropdown": 5,
     "show_nav_level": 2,
@@ -59,6 +59,6 @@ plot_formats = [("png", 180)]
 plot_apply_rcparams = True
 
 
-nb_execution_mode = os.environ.get("CONTRASTCOLORS_NB_EXECUTION", "auto")
+nb_execution_mode = os.environ.get("AWESOMEFIGURES_NB_EXECUTION", os.environ.get("CONTRASTCOLORS_NB_EXECUTION", "auto"))
 nb_execution_timeout = 90
 nb_execution_raise_on_error = True
