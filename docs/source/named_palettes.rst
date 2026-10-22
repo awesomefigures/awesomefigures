@@ -2,7 +2,7 @@ Built-in scientific palettes
 ============================
 
 Choose familiar published colour schemes without copying HEX codes. These
-presets are installed with ``contrastcolors`` and available to all plotting
+presets are installed with ``awesomefigures`` and available to all plotting
 helpers, publication styles and the interactive Palette & Plot Studio.
 
 There are **two different contracts**:
@@ -30,12 +30,12 @@ automatically universal colour-blind guarantees.
 .. plot::
 
    import matplotlib.pyplot as plt
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   names = cc.available_named_palettes("categorical")
+   names = af.available_named_palettes("categorical")
    fig, axes = plt.subplots(len(names), 1, figsize=(9.6, 7.3))
    for ax, name in zip(axes, names):
-       colours = cc.named_palette(name, as_hex=True)
+       colours = af.named_palette(name, as_hex=True)
        for k, code in enumerate(colours):
            ax.barh(0, 1, left=k, height=.8, color=code, edgecolor="white",
                    linewidth=.8)
@@ -52,22 +52,22 @@ Access the precise colours immediately:
 
 .. code-block:: python
 
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   cc.available_named_palettes("categorical")
-   cc.named_palette("okabe-ito", as_hex=True)
-   cc.color_palette("tol-bright", n=4)
-   cc.plot_scheme("tol-high-contrast")
-   cc.scatter_scheme("brewer-set2", n=5)
+   af.available_named_palettes("categorical")
+   af.named_palette("okabe-ito", as_hex=True)
+   af.color_palette("tol-bright", n=4)
+   af.plot_scheme("tol-high-contrast")
+   af.scatter_scheme("brewer-set2", n=5)
 
 Use the schemes with the publication styles:
 
 .. code-block:: python
 
    import matplotlib.pyplot as plt
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   cc.set_style("elegante", palette="okabe-ito",
+   af.set_style("elegante", palette="okabe-ito",
                 font="DejaVu Sans", use_tex=False)
    fig, ax = plt.subplots()
    for values in series:
@@ -89,14 +89,14 @@ scalar colour mapping, **not** cycled across nominal category labels.
 
    import numpy as np
    import matplotlib.pyplot as plt
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   names = [*cc.available_named_palettes("sequential"),
-            *cc.available_named_palettes("diverging")]
+   names = [*af.available_named_palettes("sequential"),
+            *af.available_named_palettes("diverging")]
    fig, axes = plt.subplots(len(names), 1, figsize=(8.8, 4.8))
    ramp = np.linspace(0, 1, 384)[None, :]
    for ax, name in zip(axes, names):
-       ax.imshow(ramp, cmap=cc.named_colormap(name), aspect="auto",
+       ax.imshow(ramp, cmap=af.named_colormap(name), aspect="auto",
                  interpolation="nearest", extent=[0, 1, 0, 1])
        ax.set_ylabel(name, rotation=0, ha="right", va="center", fontsize=10)
        ax.set_yticks([])
@@ -108,11 +108,11 @@ Example:
 
 .. code-block:: python
 
-   image = ax.imshow(values, cmap=cc.named_colormap("cividis"))
+   image = ax.imshow(values, cmap=af.named_colormap("cividis"))
    fig.colorbar(image, ax=ax)
 
    # If a finite list of sequential colours is needed:
-   sampled = cc.named_palette("viridis", n=7, as_hex=True)
+   sampled = af.named_palette("viridis", n=7, as_hex=True)
 
 Continuous palettes in this catalogue: ``viridis``, ``cividis``,
 ``plasma``, ``magma``, ``inferno`` and diverging ``rdbu``
@@ -123,13 +123,13 @@ Metadata and transparency
 
 .. code-block:: python
 
-   p = cc.get_named_palette("okabe-ito")
+   p = af.get_named_palette("okabe-ito")
    print(p.kind, p.source, p.colors)
-   print(cc.available_named_palettes())
+   print(af.available_named_palettes())
 
    # The original palette is never replaced by adjusted HEX values.
-   original_hex = cc.named_palette("okabe-ito", as_hex=True)
-   translucent = cc.named_palette(
+   original_hex = af.named_palette("okabe-ito", as_hex=True)
+   translucent = af.named_palette(
        "okabe-ito", alpha=0.65, background="#FFFFFF",
        preserve_apparent=True
    )
@@ -142,7 +142,7 @@ is approximate, and overlapping transparent marks change appearance.
 ``contrast_palette("okabe-ito")`` deliberately raises: a WCAG-constructed
 palette and a historically specified palette must not be silently conflated.
 To design new hues with guaranteed adjacent *opaque* luminance ratios, supply
-hue angles to ``cc.contrast_palette([...], ratio=...)``.
+hue angles to ``af.contrast_palette([...], ratio=...)``.
 
 Attribution and source references
 ---------------------------------
