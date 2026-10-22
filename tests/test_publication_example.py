@@ -38,18 +38,18 @@ def test_manuscript_has_all_demo_graphics():
 def test_generated_graphics_use_public_apis():
     script = (DEMO / "generate.py").read_text(encoding="utf-8")
     for part in (
-        "cc.inspect_latex(", "cc.find_latex_font(", "cc.latex_style(",
-        "cc.show_vector_accessibility_panel(",
-        "cc.verify_latex_placement(",
+        "af.inspect_latex(", "af.find_latex_font(", "af.latex_style(",
+        "af.show_vector_accessibility_panel(",
+        "af.verify_latex_placement(",
     ):
         assert part in script
     assert "np.random.default_rng(20261007)" in script
     assert "lines.pgf" in script
     assert "lines.pdf" in script
     assert "pie.pdf" not in script
-    assert "cc.pie_plot(" not in script
+    assert "af.pie_plot(" not in script
     assert "groups.pgf" in script
-    assert "cc.contrast_grid(" in script
+    assert "af.contrast_grid(" in script
     assert '"palette_grid.pdf"' in script
     assert '"palette_grid.pgf"' in script
     assert 'edgecolors="white"' in script
