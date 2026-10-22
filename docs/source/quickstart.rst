@@ -18,6 +18,40 @@ For development and documentation:
    pytest
    sphinx-build -W -b html docs/source docs/_build/html
 
+Conda installation
+------------------
+
+From the root of the AwesomeFigures checkout, create the complete development
+environment with **one command**. Conda resolves the scientific binaries from
+``conda-forge``; pip installs the local package and extras in editable mode:
+
+.. code-block:: bash
+
+   conda env create -f environment.yml
+   conda activate awesomefigures
+
+   python -m pip check
+   python -c "import awesomefigures as af; print(af.__version__)"
+   pytest
+
+To update an existing environment after pulling changes:
+
+.. code-block:: bash
+
+   conda env update -n awesomefigures -f environment.yml --prune
+
+The ``environment.yml`` includes Python 3.12, NumPy, Matplotlib,
+Colorspacious, tests, Sphinx, and notebook tools. It uses the
+``dev``, ``docs``, and ``notebooks`` extras defined by
+``pyproject.toml``, so dependencies do not need to be installed twice.
+Run these commands from the repository root because the pip dependency is
+``-e .[dev,docs,notebooks]``.
+
+**From another Conda project:** activate its environment, then run
+``python -m pip install -e /path/to/Colors`` to reuse the library
+without copying its source files. The import remains
+``import awesomefigures as af``.
+
 A complete first plot
 ---------------------
 
