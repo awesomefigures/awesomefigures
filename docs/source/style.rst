@@ -107,8 +107,18 @@ It also separates **curves** from **visible markers**: spline/line data
 remain unchanged and can touch the axes, but circles, squares, triangles
 and other Line2D markers inside the plot have room around them.
 A marker that would overlap a spine is suppressed *only visually*;
-no interpolation knot is deleted. Dense lines use up to nine spaced
-markers by default, keeping their original continuous curve.
+no interpolation knot is deleted. By default **at most seven symbols per
+line** are displayed, with **38 pt minimum centre-to-centre separation**
+and **6 pt extra clearance** at the edges (in addition to marker radius).
+These are physical display dimensions, so a 1,400-point spline cannot turn
+into 1,400 overlapping triangles. The **full continuous line** and every
+sample used in the interpolation remain unchanged.
+
+The same marker-density rule also applies to the ``heri`` style.
+Explicit ``markevery=1``, ``markevery=4``, integer/slice patterns and
+the default ``markevery=None`` cannot produce crowded symbols. Marker-only
+plots (``linestyle="None"``) and scatter observations are left intact:
+their individual symbols represent data and should not be silently removed.
 
 .. plot::
    :include-source:
@@ -134,6 +144,32 @@ lie on the vertical boundaries. When a curve is defined at an endpoint,
 the stroke reaches the boundary, but its marker is not clipped. The
 library does **not** extrapolate a spline whose data stop short of the
 chosen nice view limits.
+
+Crowded spline markers: before and after
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This figure deliberately requests a triangle **at every one of 1,401
+samples**. AwesomeFigures spaces only the *visible glyphs*, without
+downsampling the function itself. The PDF/PGF still contains the entire
+smooth curve.
+
+.. plot::
+   :include-source:
+
+   import numpy as np
+   import matplotlib.pyplot as plt
+   import awesomefigures as af
+
+   af.set_style("elegante", font="DejaVu Sans", use_tex=False)
+   x = np.linspace(0, 100, 1401)
+   fig, ax = plt.subplots(figsize=(8, 3.5))
+   ax.plot(x, np.sin(x / 13), marker="^", markersize=7,
+           markevery=1, label="Smooth curve")
+   ax.plot(x, .57*np.cos(x / 13 + .7), marker="s", markersize=6,
+           markevery=4, label="Comparison")
+   ax.set(xlabel="Time", ylabel="Response")
+   ax.legend()
+   fig.canvas.draw()
 
 How the tick algorithm works
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -170,8 +206,9 @@ The same reasoning applies independently to ``y``.
        ax,
        target_xticks=6,
        target_yticks=5,
-       marker_inset_pt=4.0,
-       marker_count=9,
+       marker_inset_pt=6.0,
+       marker_count=7,
+       marker_min_spacing_pt=38.0,
        force_zero=False,
        padding=0.0,
    )
@@ -191,10 +228,9 @@ for tick generation without creating a plot.
 **Limits and reproducibility:** user-set ``set_xlim()`` and
 ``set_ylim()`` are respected. The alignment helper intentionally skips
 logarithmic, date, categorical, shared, inverted, and non-Cartesian axes;
-no misleading linear tick arithmetic is applied. Manually specified
-marker intervals based on point indices are preserved except near the
-frame. Floating-point/arc-length ``markevery`` patterns keep Matplotlib
-behaviour unchanged. Scatter observations are never deleted; scatter-only
+no misleading linear tick arithmetic is applied. Explicit integer, slice and fractional ``markevery``
+patterns remain the set of *eligible* positions; the final visible symbols
+are thinned in screen space to avoid overlaps. Scatter observations are never deleted; scatter-only
 figures receive a small outward extension to protect boundary symbols.
 
 This finishing pass controls geometry, not data smoothing. It does not
