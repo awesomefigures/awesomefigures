@@ -158,11 +158,11 @@ Shortest plotting workflow
 
 .. code-block:: python
 
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   cc.set_style("heri", font="Arial")
+   af.set_style("heri", font="Arial")
 
-   colors = cc.color_palette(
+   colors = af.color_palette(
        hues=[55, 20, 145, 210, 290],
        ratio=1.4,
    )
@@ -175,7 +175,7 @@ Palette with diagnostics
 
 .. code-block:: python
 
-   palette = cc.contrast_palette(
+   palette = af.contrast_palette(
        hues=[55, 20, 145, 210, 290],
        ratio=1.4,
    )
@@ -190,7 +190,7 @@ Explore a matrix of choices
 
 .. code-block:: python
 
-   grid = cc.contrast_grid(
+   grid = af.contrast_grid(
        levels=5,
        hues=[55, 20, 145, 210, 290],
        ratio=1.4,
@@ -204,7 +204,7 @@ Alpha-aware rendering
 
 .. code-block:: python
 
-   palette = cc.contrast_palette(
+   palette = af.contrast_palette(
        hues=[55, 20, 145, 210, 290],
        ratio=1.4,
    )
