@@ -148,7 +148,7 @@ class Palette(Sequence[ColorCell]):
 
         return max(minimum_alpha(cell.rgb, background=background) for cell in self)
 
-    def as_cmap(self, *, name: str = "contrastcolors"):
+    def as_cmap(self, *, name: str = "awesomefigures"):
         """Return a Matplotlib ``ListedColormap``."""
         from matplotlib.colors import ListedColormap
 

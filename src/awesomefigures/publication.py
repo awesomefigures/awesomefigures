@@ -173,7 +173,7 @@ def _run_tex(
         raise ValueError("timeout must be positive.")
     with tempfile.TemporaryDirectory(prefix="cc_latex_") as tmp:
         directory = Path(tmp)
-        tex = directory / "contrastcolors_probe.tex"
+        tex = directory / "awesomefigures_probe.tex"
         tex.write_text(document_source, encoding="utf-8")
         command = [
             exe, "-interaction=nonstopmode", "-halt-on-error",
@@ -191,14 +191,14 @@ def _run_tex(
         except OSError as exc:
             raise LatexProbeError(f"Unable to launch {engine}: {exc}") from exc
         log = completed.stdout
-        logfile = directory / "contrastcolors_probe.log"
+        logfile = directory / "awesomefigures_probe.log"
         if logfile.is_file():
             log += "\n" + logfile.read_text(encoding="utf-8", errors="replace")
         if completed.returncode != 0:
             tail = "\n".join(log.splitlines()[-22:])
             raise LatexProbeError(f"LaTeX probe failed. Last log lines:\n{tail}")
         if output_pdf is not None:
-            pdf = directory / "contrastcolors_probe.pdf"
+            pdf = directory / "awesomefigures_probe.pdf"
             if not pdf.is_file():
                 raise LatexProbeError("LaTeX finished without creating a PDF proof.")
             output_pdf.parent.mkdir(parents=True, exist_ok=True)
@@ -484,13 +484,13 @@ def fit_figure_to_latex(
     new_width = layout.width_inches(width)
     ratio = height_ratio if height_ratio is not None else size[1] / size[0]
     fig.set_size_inches(new_width, new_width * ratio, forward=True)
-    baseline = getattr(fig, "_contrastcolors_text_baseline", None)
+    baseline = getattr(fig, "_awesomefigures_text_baseline", None)
     if baseline is None:
         reference = reference_fontsize_pt or float(mpl.rcParams["font.size"])
         if not math.isfinite(reference) or reference <= 0:
             raise ValueError("reference_fontsize_pt must be positive.")
         baseline = [(text, text.get_fontsize() / reference) for text in fig.findobj(match=Text)]
-        fig._contrastcolors_text_baseline = baseline
+        fig._awesomefigures_text_baseline = baseline
     for text, relative_size in baseline:
         text.set_fontsize(layout.fontsize_pt * relative_size)
 
