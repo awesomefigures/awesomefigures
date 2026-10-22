@@ -28,11 +28,11 @@ python -c "import awesomefigures as af; print(af.__version__)"
 For another library or project before a PyPI release:
 
 ```bash
-python -m pip install "awesomefigures @ git+https://github.com/heri-espino/Colors.git@refactor/awesomefigures-package"
+python -m pip install "awesomefigures @ git+https://github.com/heri-espino/Colors.git@main"
 ```
 
-After the pull request is merged, switch that Git URL to a pinned
-release tag or immutable commit. The GitHub repository name and Pages
+For reproducible use, replace `main` with a pinned release tag or immutable
+commit. The GitHub repository name and Pages
 URLs currently remain `Colors`; Python package and distribution names
 are `awesomefigures`. Uploading to PyPI is a separate release step.
 
@@ -157,6 +157,10 @@ after it has been published to PyPI.
 
 The Conda YAML targets local development, not a cross-platform lockfile.
 It does **not** publish anything to PyPI or run notebook generation automatically.
+
+A manually triggered **Conda environment smoke test** workflow is available
+in GitHub Actions when you want to validate an actual fresh Conda installation
+without running heavyweight dependency-solving on every push.
 
 ## Windows: run the entire project with Conda
 
