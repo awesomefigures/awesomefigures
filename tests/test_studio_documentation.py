@@ -38,7 +38,7 @@ def test_studio_has_real_export_and_design_controls():
         "lines", "time", "histogram", "box", "violin", "ridge",
         "scatter", "heatmap", "bar", "pie",
     } <= elements.types
-    assert "cc.register_palette(" in content
+    assert "af.register_palette(" in content
     assert "plotPython(plotType)" in content
     assert "designSnapshot()" in content
     assert "applyDesign(raw)" in content
@@ -88,18 +88,18 @@ def test_studio_historical_palettes_match_python_exactly():
     el = Elements()
     el.feed(html)
     assert "builtinPalette" in el.ids
-    for name in cc.available_named_palettes("categorical"):
+    for name in af.available_named_palettes("categorical"):
         match = re.search(r"'" + re.escape(name) + r"':\[([^]]+)\]", html)
         assert match, f"Missing browser palette: {name}"
         actual = re.findall(r"#[A-F0-9]{6}", match.group(1))
-        assert actual == cc.named_palette(name, as_hex=True)
+        assert actual == af.named_palette(name, as_hex=True)
     assert "let activeBuiltin=''" in html
     assert "function leaveBuiltin()" in html
     assert "function chooseBuiltin(name)" in html
     assert "Measured adjacent CR (not a WCAG design constraint)" in html
     assert "style:['heri','elegante','default']" in html
-    assert "cc.named_palette(" in html
-    assert "cc.plot_scheme(" in html
+    assert "af.named_palette(" in html
+    assert "af.plot_scheme(" in html
     assert "builtinPalette:activeBuiltin" in html
 
 
