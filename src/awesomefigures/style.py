@@ -1,4 +1,4 @@
-"""Matplotlib publication styles for contrastcolors.
+"""Matplotlib publication styles for awesomefigures.
 
 The Heri preset follows the publication figures in
 heri-espino/Bayesian-Uncertainty-in-WTI-APOs: compact Wiley-like typography,
@@ -100,7 +100,7 @@ def _install_elegant_draw() -> None:
     while an explicit apply_elegant_axes call also works without the preset.
     """
     global _ELEGANT_DRAW_PATCHED
-    if _ELEGANT_DRAW_PATCHED or getattr(Axes, "_contrastcolors_elegant_draw", False):
+    if _ELEGANT_DRAW_PATCHED or getattr(Axes, "_awesomefigures_elegant_draw", False):
         _ELEGANT_DRAW_PATCHED = True
         return
     original_draw = Axes.draw
@@ -108,12 +108,12 @@ def _install_elegant_draw() -> None:
     def draw(self, renderer):
         if _ELEGANT_ENABLED:
             from .elegant import apply_elegant_axes
-            opts = getattr(self, "_contrastcolors_elegant_options", {})
+            opts = getattr(self, "_awesomefigures_elegant_options", {})
             apply_elegant_axes(self, **opts)
         return original_draw(self, renderer)
 
     Axes.draw = draw
-    Axes._contrastcolors_elegant_draw = True
+    Axes._awesomefigures_elegant_draw = True
     _ELEGANT_DRAW_PATCHED = True
 
 
@@ -158,12 +158,12 @@ def _set_rasterized(artist):
 def _install_rasterized_defaults() -> None:
     """Rasterize dense artists conditionally while leaving ordinary lines vector."""
     global _RASTER_PATCHED
-    if _RASTER_PATCHED or getattr(Axes, "_contrastcolors_rasterized_defaults", False):
+    if _RASTER_PATCHED or getattr(Axes, "_awesomefigures_rasterized_defaults", False):
         _RASTER_PATCHED = True
         return
 
     _RASTER_PATCHED = True
-    Axes._contrastcolors_rasterized_defaults = True
+    Axes._awesomefigures_rasterized_defaults = True
 
     original_scatter = Axes.scatter
     original_hexbin = Axes.hexbin
@@ -175,9 +175,9 @@ def _install_rasterized_defaults() -> None:
     def scatter(self, *args, **kwargs):
         if _ACCESSIBLE_SCATTER and "marker" not in kwargs:
             from .api import DEFAULT_MARKERS
-            index = getattr(self, "_contrastcolors_scatter_index", 0)
+            index = getattr(self, "_awesomefigures_scatter_index", 0)
             kwargs["marker"] = DEFAULT_MARKERS[index % len(DEFAULT_MARKERS)]
-            self._contrastcolors_scatter_index = index + 1
+            self._awesomefigures_scatter_index = index + 1
         if _RASTERIZE_DENSE:
             kwargs.setdefault("rasterized", True)
         return original_scatter(self, *args, **kwargs)
@@ -217,10 +217,10 @@ def _install_rasterized_defaults() -> None:
     except Exception:
         return
 
-    if getattr(Axes3D, "_contrastcolors_rasterized_defaults", False):
+    if getattr(Axes3D, "_awesomefigures_rasterized_defaults", False):
         return
 
-    Axes3D._contrastcolors_rasterized_defaults = True
+    Axes3D._awesomefigures_rasterized_defaults = True
     original_plot_surface = Axes3D.plot_surface
     original_plot_trisurf = Axes3D.plot_trisurf
 
