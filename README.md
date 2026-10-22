@@ -1,5 +1,42 @@
 # AwesomeFigures
 
+**Distribution:** `awesomefigures` · **Python import:** `import awesomefigures as af`
+
+```python
+import awesomefigures as af
+
+af.set_style("elegante", palette="okabe-ito", use_tex=False)
+palette = af.color_palette("tol-bright")
+```
+
+### Migration from contrastcolors
+
+The name change is a **breaking import-path change**. Replace
+`import contrastcolors as cc` with `import awesomefigures as af`
+and update `cc.` calls to `af.`. The former import package is not
+installed by the new distribution. Existing figures and scientific
+algorithms otherwise retain their behavior.
+
+For an existing development environment:
+
+```bash
+python -m pip uninstall -y contrastcolors
+python -m pip install -e .
+python -c "import awesomefigures as af; print(af.__version__)"
+```
+
+For another library or project before a PyPI release:
+
+```bash
+python -m pip install "awesomefigures @ git+https://github.com/heri-espino/Colors.git@refactor/awesomefigures-package"
+```
+
+After the pull request is merged, switch that Git URL to a pinned
+release tag or immutable commit. The GitHub repository name and Pages
+URLs currently remain `Colors`; Python package and distribution names
+are `awesomefigures`. Uploading to PyPI is a separate release step.
+
+
 **Implementation catalogue:** [Complete feature inventory](FEATURES.md)
 ([Sphinx reference](docs/source/features.rst)) lists all 70 current public
 exports and the separate browser, notebook, TeX and automation tools.
