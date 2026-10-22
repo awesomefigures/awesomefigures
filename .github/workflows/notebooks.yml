@@ -43,7 +43,7 @@ jobs:
 
       - name: Build Sphinx from stored notebook outputs
         env:
-          CONTRASTCOLORS_NB_EXECUTION: "off"
+          AWESOMEFIGURES_NB_EXECUTION: "off"
         run: sphinx-build -W -b html docs/source docs/_build/html
 
       - uses: actions/configure-pages@v6

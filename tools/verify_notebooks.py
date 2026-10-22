@@ -23,7 +23,7 @@ def verify_notebooks(directory: Path) -> int:
              or "grid.plot(" in cell.source)
         ]
         for i in figure_indices:
-            if i + 1 >= len(notebook.cells) or "cc.show_accessibility_panel(" not in notebook.cells[i + 1].source:
+            if i + 1 >= len(notebook.cells) or "af.show_accessibility_panel(" not in notebook.cells[i + 1].source:
                 errors.append(f"{path.name}: figure at cell {i+1} missing panel")
 
         if not code_cells:
