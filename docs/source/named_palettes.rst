@@ -1,9 +1,17 @@
-Built-in scientific palettes
+AwesomeFigures palette atlas
 ============================
 
 Choose familiar published colour schemes without copying HEX codes. These
 presets are installed with ``awesomefigures`` and available to all plotting
 helpers, publication styles and the interactive Palette & Plot Studio.
+
+**Browse:** :doc:`Interactive Studio <studio>` for categorical palettes,
+:doc:`Styles <style>` for publication layouts, and
+:doc:`Palettes and grids <palettes>` for the WCAG/OKLCH constructor.
+
+**Included reference schemes:** 7 named categorical palettes,
+5 sequential colormaps and 1 diverging colormap, for a total of **13**.
+The original colours and source attribution are preserved.
 
 There are **two different contracts**:
 
