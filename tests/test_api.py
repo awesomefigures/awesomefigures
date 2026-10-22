@@ -1,6 +1,6 @@
 import numpy as np
 
-import contrastcolors as cc
+import awesomefigures as cc
 
 
 def test_palette_maps_one_hue_to_each_luminance_level():
@@ -58,7 +58,7 @@ def test_plot_scheme_rejects_empty_identifier_sequences():
 
 
 def test_print_safe_defaults_separate_three_series_in_grayscale():
-    from contrastcolors.color_spaces import relative_luminance
+    from awesomefigures.color_spaces import relative_luminance
 
     values = cc.print_safe_luminances(3)
     assert values[0] > values[1] > values[2]
@@ -72,7 +72,7 @@ def test_print_safe_defaults_separate_three_series_in_grayscale():
 
 
 def test_print_safe_scatter_defaults_and_manual_overrides():
-    from contrastcolors.color_spaces import relative_luminance
+    from awesomefigures.color_spaces import relative_luminance
 
     styles = cc.scatter_scheme([25, 150, 275])
     values = [relative_luminance(s["color"][:3]) for s in styles]
@@ -98,7 +98,7 @@ def test_print_safe_handles_different_counts_and_invalid_inputs():
 
 def test_pie_plot_has_white_wedge_edges_and_clear_grayscale_groups():
     import matplotlib.pyplot as plt
-    from contrastcolors.color_spaces import relative_luminance
+    from awesomefigures.color_spaces import relative_luminance
 
     fig, ax = plt.subplots()
     wedges, labels = cc.pie_plot([20, 35, 45], labels=["A", "B", "C"], ax=ax)
@@ -130,7 +130,7 @@ def test_palette_preview_hex_text_uses_higher_contrast_foreground():
         alpha=0.7, background="white",
     )
     assert len(ax.texts) == len(ax.patches) == 4
-    from contrastcolors.color_spaces import contrast_ratio
+    from awesomefigures.color_spaces import contrast_ratio
     for patch, label in zip(ax.patches, ax.texts):
         r, g, b, a = patch.get_facecolor()
         background = [(a * ch + (1 - a)) for ch in (r, g, b)]
