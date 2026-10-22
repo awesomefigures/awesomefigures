@@ -1,6 +1,6 @@
 from pathlib import Path
 
-import contrastcolors as cc
+import awesomefigures as cc
 
 
 ROOT = Path(__file__).resolve().parents[1]
