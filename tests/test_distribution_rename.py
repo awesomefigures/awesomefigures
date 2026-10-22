@@ -16,4 +16,8 @@ def test_new_import_alias_is_documented():
     for path in ("README.md", "docs/source/quickstart.rst", "docs/source/_static/studio.html"):
         text = (ROOT / path).read_text(encoding="utf-8")
         assert "import awesomefigures as af" in text
-        assert "import contrastcolors as cc" not in text
+        if path != "README.md":
+            assert "import contrastcolors as cc" not in text
+    # The README deliberately quotes the former import in migration guidance.
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    assert "Migration from contrastcolors" in readme
