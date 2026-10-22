@@ -4,7 +4,7 @@ matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
 import numpy as np
 import pytest
-import contrastcolors as cc
+import awesomefigures as cc
 
 
 @pytest.fixture
