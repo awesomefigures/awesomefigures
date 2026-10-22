@@ -8,12 +8,12 @@ Five-series line plot
 
    import numpy as np
    import matplotlib.pyplot as plt
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   cc.set_style("heri", font="Arial")
+   af.set_style("heri", font="Arial")
 
    x = np.linspace(0, 2 * np.pi, 500)
-   colors = cc.color_palette(
+   colors = af.color_palette(
        hues=[55, 20, 145, 210, 290],
        ratio=1.25,
        start_luminance=0.72,
@@ -31,14 +31,14 @@ Five-series line plot
    ax.set_xlabel("x")
    ax.set_ylabel("value")
    ax.legend()
-   cc.save_figure(fig, "line_plot.pdf")
+   af.save_figure(fig, "line_plot.pdf")
 
 Scatter plot with alpha compensation
 ------------------------------------
 
 .. code-block:: python
 
-   palette = cc.contrast_palette(
+   palette = af.contrast_palette(
        hues=[20, 145, 210],
        ratio=1.35,
        start_luminance=0.75,
@@ -59,34 +59,34 @@ Heatmap using the Heri continuous map
 
 .. code-block:: python
 
-   cc.set_style("heri", font="Arial")
+   af.set_style("heri", font="Arial")
 
    fig, ax = plt.subplots()
    image = ax.imshow(
        matrix,
-       cmap=cc.HERI_CMAP,
+       cmap=af.HERI_CMAP,
        interpolation="nearest",
    )
    fig.colorbar(image, ax=ax)
-   cc.save_figure(fig, "heatmap.pdf")
+   af.save_figure(fig, "heatmap.pdf")
 
 Multi-panel publication figure
 ------------------------------
 
 .. code-block:: python
 
-   cc.set_style("heri", font="Arial")
+   af.set_style("heri", font="Arial")
 
    fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.7))
 
    axes[0].plot(x, y1)
    axes[1].scatter(x, y2)
 
-   cc.panel_label(axes[0], "A")
-   cc.panel_label(axes[1], "B")
+   af.panel_label(axes[0], "A")
+   af.panel_label(axes[1], "B")
 
    fig.tight_layout()
-   cc.save_figure(
+   af.save_figure(
        fig,
        "two_panel.pdf",
        metadata={
@@ -100,7 +100,7 @@ Temporary style
 
 .. code-block:: python
 
-   with cc.style_context("heri", font="Arial"):
+   with af.style_context("heri", font="Arial"):
        fig, ax = plt.subplots()
        ax.plot(x, y)
 
@@ -111,20 +111,20 @@ Inspect contrast mathematically
 
 .. code-block:: python
 
-   ys = cc.luminance_ladder(
+   ys = af.luminance_ladder(
        levels=5,
        ratio=1.4,
        start_luminance=0.95,
    )
 
    for a, b in zip(ys[:-1], ys[1:]):
-       print(cc.luminance_contrast(a, b))
+       print(af.luminance_contrast(a, b))
 
 Inspect two arbitrary colors
 ----------------------------
 
 .. code-block:: python
 
-   print(cc.relative_luminance("#0083F9"))
-   print(cc.contrast_ratio("#0083F9", "#97001C"))
-   print(cc.delta_e_ok("#0083F9", "#97001C"))
+   print(af.relative_luminance("#0083F9"))
+   print(af.contrast_ratio("#0083F9", "#97001C"))
+   print(af.delta_e_ok("#0083F9", "#97001C"))
