@@ -82,7 +82,7 @@ def test_print_safe_studio_defaults_adapt_to_color_count():
 def test_studio_historical_palettes_match_python_exactly():
     """A browser preview must not quietly depart from Python's HEX scheme."""
     import re
-    import awesomefigures as cc
+    import awesomefigures as af
 
     html = STUDIO.read_text(encoding="utf-8")
     el = Elements()
