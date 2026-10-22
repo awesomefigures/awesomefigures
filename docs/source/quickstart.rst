@@ -25,11 +25,11 @@ A complete first plot
 
    import numpy as np
    import matplotlib.pyplot as plt
-   import contrastcolors as cc
+   import awesomefigures as af
 
-   cc.set_style("heri", font="Arial")
+   af.set_style("heri", font="Arial")
 
-   colors = cc.color_palette(
+   colors = af.color_palette(
        hues=[55, 20, 145, 210, 290],
        ratio=1.4,
    )
@@ -49,7 +49,7 @@ A complete first plot
    ax.set_ylabel("value")
    ax.legend()
 
-   cc.save_figure(fig, "example.pdf")
+   af.save_figure(fig, "example.pdf")
 
 What happened
 -------------
@@ -70,7 +70,7 @@ than only Matplotlib RGBA tuples.
 
 .. code-block:: python
 
-   palette = cc.contrast_palette(
+   palette = af.contrast_palette(
        hues=[55, 20, 145, 210, 290],
        ratio=1.4,
    )
@@ -84,7 +84,7 @@ Alpha-aware colors
 
 .. code-block:: python
 
-   colors = cc.color_palette(
+   colors = af.color_palette(
        hues=[55, 20, 145, 210, 290],
        ratio=1.4,
        alpha=0.70,
@@ -101,7 +101,7 @@ Exploring multiple hue choices
 
 .. code-block:: python
 
-   grid = cc.contrast_grid(
+   grid = af.contrast_grid(
        levels=5,
        hues=[55, 20, 145, 210, 290],
        ratio=1.4,
