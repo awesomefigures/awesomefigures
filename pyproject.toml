@@ -3,9 +3,9 @@ requires = ["setuptools>=77.0.3", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "contrastcolors"
+name = "awesomefigures"
 version = "0.1.0"
-description = "Contrast-controlled color palettes for Matplotlib."
+description = "Publication-ready scientific figures and accessible Matplotlib styling."
 license = "MIT"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -21,6 +21,11 @@ classifiers = [
   "Programming Language :: Python :: 3",
   "Topic :: Scientific/Engineering :: Visualization",
 ]
+
+[project.urls]
+Homepage = "https://github.com/heri-espino/Colors"
+Documentation = "https://heri-espino.github.io/Colors/"
+Source = "https://github.com/heri-espino/Colors"
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "pytest-cov>=5"]
