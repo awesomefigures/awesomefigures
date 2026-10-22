@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-import contrastcolors as cc
+import awesomefigures as cc
 
 
 def test_named_preset_colors_and_scheme():
