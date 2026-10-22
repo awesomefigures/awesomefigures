@@ -11,8 +11,8 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pytest
 
-import contrastcolors as cc
-import contrastcolors.publication as pub
+import awesomefigures as af
+import awesomefigures.publication as pub
 
 
 @pytest.fixture(autouse=True)
@@ -23,7 +23,7 @@ def cleanup():
 
 @pytest.fixture
 def layout():
-    return cc.LatexLayout.from_dimensions(
+    return af.LatexLayout.from_dimensions(
         columnwidth_pt=240.0,
         textwidth_pt=500.0,
         fontsize_pt=10.0,
@@ -42,7 +42,7 @@ def test_dimensions_and_pt_to_inch(layout):
     with pytest.raises(ValueError):
         layout.width_inches(0)
     with pytest.raises(ValueError):
-        cc.LatexLayout.from_dimensions(
+        af.LatexLayout.from_dimensions(
             columnwidth_pt=550, textwidth_pt=300, fontsize_pt=10
         )
 
@@ -62,7 +62,7 @@ def test_probe_parses_pt_and_font_identity():
     assert layout.fontsize_pt == 10
     assert layout.baselineskip_pt == 12
     assert layout.font_family == "ppl"
-    with pytest.raises(cc.LatexProbeError):
+    with pytest.raises(af.LatexProbeError):
         pub._parse_layout_log("No measurements")
 
 
@@ -86,7 +86,7 @@ def test_preamble_probe_does_not_compile_paper_body(monkeypatch, tmp_path):
             "CCLAYOUT:FAMILY=cmr\n"
         )
     monkeypatch.setattr(pub, "_run_tex", fake_run)
-    layout = cc.inspect_latex(tex)
+    layout = af.inspect_latex(tex)
     assert layout.fontsize_pt == 10
     assert "THE PRIVATE MANUSCRIPT BODY" not in calls[0][0]
     assert r"\usepackage{amsmath}" in calls[0][0]
@@ -96,7 +96,7 @@ def test_preamble_probe_does_not_compile_paper_body(monkeypatch, tmp_path):
 
 def test_latex_style_sets_real_font_and_width(layout, tmp_path):
     before = mpl.rcParams.copy()
-    with cc.latex_style(layout, width="column") as publication:
+    with af.latex_style(layout, width="column") as publication:
         assert mpl.rcParams["font.size"] == 10
         assert mpl.rcParams["axes.labelsize"] == 10
         assert mpl.rcParams["xtick.labelsize"] == 8
@@ -118,13 +118,13 @@ def test_existing_figure_fit_does_not_compound_font_scaling(layout):
     ax.plot([0, 1], [0, 1])
     ax.set_xlabel("Time", fontsize=12)
     start_fontsize = ax.xaxis.label.get_fontsize()
-    result = cc.fit_figure_to_latex(
+    result = af.fit_figure_to_latex(
         fig, layout, reference_fontsize_pt=10, max_iterations=3
     )
     assert fig.get_size_inches()[0] == pytest.approx(layout.width_inches())
     assert ax.xaxis.label.get_fontsize() == pytest.approx(12)
     assert result.iterations <= 3
-    result2 = cc.fit_figure_to_latex(
+    result2 = af.fit_figure_to_latex(
         fig, layout, reference_fontsize_pt=10, max_iterations=3
     )
     assert result2.iterations <= 3
@@ -136,7 +136,7 @@ def test_width_and_readability_audit_fail_on_undersized_figure(layout):
     fig, ax = plt.subplots(figsize=(6, 3))
     ax.plot([0, 1], [1, 2], linewidth=0.1)
     ax.set_xlabel("x")
-    report = cc.audit_figure(fig, layout)
+    report = af.audit_figure(fig, layout)
     assert not report.passed
     assert any("width" in issue for issue in report.warnings)
     assert any("line" in issue for issue in report.warnings)
@@ -156,10 +156,10 @@ def test_latex_proof_requires_pdf(monkeypatch, tmp_path):
         return ("CCLAYOUT:COLUMN=250pt\nCCLAYOUT:TEXT=500pt\n"
                 "CCLAYOUT:FONT=10pt\nCCLAYOUT:FIGURE=250pt\n")
     monkeypatch.setattr(pub, "_run_tex", fake_run)
-    result = cc.verify_latex_placement(tex, graphic)
+    result = af.verify_latex_placement(tex, graphic)
     assert result.columnwidth_pt == 250
     with pytest.raises(ValueError):
-        cc.verify_latex_placement(tex, tmp_path / "not_a_pdf.png")
+        af.verify_latex_placement(tex, tmp_path / "not_a_pdf.png")
 
 
 def test_exact_source_contains_no_body_and_engine_validation(tmp_path):
@@ -183,7 +183,7 @@ def test_optional_real_latex_probe_when_installed(tmp_path):
         "\\begin{document}\nThis body is not needed.\n\\end{document}\n",
         encoding="utf-8",
     )
-    actual = cc.inspect_latex(tex, timeout=30)
+    actual = af.inspect_latex(tex, timeout=30)
     assert actual.fontsize_pt == pytest.approx(10.0)
     assert actual.columnwidth_pt < actual.textwidth_pt
 
@@ -197,14 +197,14 @@ def test_latex_proof_checks_real_unscaled_width(monkeypatch, tmp_path):
         return ("CCLAYOUT:COLUMN=250pt\nCCLAYOUT:TEXT=500pt\n"
                 "CCLAYOUT:FONT=10pt\nCCLAYOUT:FIGURE=245pt\n")
     monkeypatch.setattr(pub, "_run_tex", wrong)
-    with pytest.raises(cc.LatexProbeError, match="Figure has width"):
-        cc.verify_latex_placement(tex, pdf)
+    with pytest.raises(af.LatexProbeError, match="Figure has width"):
+        af.verify_latex_placement(tex, pdf)
     def right(source, *, source_dir, engine, timeout, output_pdf=None):
         assert r"\onecolumn" in source
         return ("CCLAYOUT:COLUMN=250pt\nCCLAYOUT:TEXT=500pt\n"
                 "CCLAYOUT:FONT=10pt\nCCLAYOUT:FIGURE=500pt\n")
     monkeypatch.setattr(pub, "_run_tex", right)
-    layout = cc.verify_latex_placement(tex, pdf, width="text")
+    layout = af.verify_latex_placement(tex, pdf, width="text")
     assert layout.textwidth_pt == 500
 
 
@@ -215,7 +215,7 @@ def test_pdf_and_svg_keep_exact_latex_width_with_heri_tight_default(layout, tmp_
     from 217.69 TeX pt to 211.67 TeX pt on macOS, breaking LaTeX placement.
     PDF uses 72 PostScript points/in, whereas TeX measures 72.27 pt/in.
     """
-    with cc.latex_style(layout, width="column") as publication:
+    with af.latex_style(layout, width="column") as publication:
         assert mpl.rcParams["savefig.bbox"] == "tight"
         fig, ax = publication.subplots(height_ratio=0.8)
         ax.plot([0, 1, 2], [1, 3, 2])
@@ -244,7 +244,7 @@ def test_pdf_and_svg_keep_exact_latex_width_with_heri_tight_default(layout, tmp_
 
 
 def test_publication_axis_label_typography_defaults_and_customizable(layout):
-    with cc.latex_style(layout, width="column") as p:
+    with af.latex_style(layout, width="column") as p:
         fig, ax = p.subplots()
         ax.set(xlabel="x axis", ylabel="y axis")
         assert mpl.rcParams["axes.labelweight"] == "normal"
@@ -252,7 +252,7 @@ def test_publication_axis_label_typography_defaults_and_customizable(layout):
         assert ax.yaxis.label.get_fontsize() == pytest.approx(layout.fontsize_pt)
         assert ax.xaxis.label.get_fontweight() == "normal"
         assert ax.yaxis.label.get_fontweight() == "normal"
-    with cc.latex_style(layout, axis_label_scale=0.9,
+    with af.latex_style(layout, axis_label_scale=0.9,
                         axis_label_weight="bold") as p:
         fig, ax = p.subplots()
         ax.set(xlabel="x", ylabel="y")
@@ -261,5 +261,5 @@ def test_publication_axis_label_typography_defaults_and_customizable(layout):
         )
         assert ax.yaxis.label.get_fontweight() == "bold"
     with pytest.raises(ValueError):
-        with cc.latex_style(layout, axis_label_scale=0):
+        with af.latex_style(layout, axis_label_scale=0):
             pass

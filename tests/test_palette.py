@@ -1,6 +1,6 @@
 import numpy as np
 
-from contrastcolors import contrast_grid
+from awesomefigures import contrast_grid
 
 
 def test_every_column_hits_row_luminance():
@@ -33,9 +33,9 @@ def test_diagonal_palette_has_expected_size():
 
 def test_contrast_grid_hex_text_uses_higher_contrast_foreground():
     import matplotlib.pyplot as plt
-    import contrastcolors as cc
+    import awesomefigures as af
 
-    grid = cc.contrast_grid(
+    grid = af.contrast_grid(
         levels=3, hues=[25, 115, 205, 295],
         ratio=1.55, start_luminance=.65, chroma=.12,
     )
@@ -44,7 +44,7 @@ def test_contrast_grid_hex_text_uses_higher_contrast_foreground():
     assert len(ax.texts) == len(ax.patches) == 12
     for patch, label in zip(ax.patches, ax.texts):
         background = patch.get_facecolor()[:3]
-        ratio = cc.contrast_ratio(background, label.get_color())
+        ratio = af.contrast_ratio(background, label.get_color())
         assert ratio >= 4.5, f"Hex label contrast too weak: {ratio}"
     assert all(label.get_text().startswith(r"$\#$") for label in ax.texts)
     plt.close(fig)
