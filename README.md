@@ -1,4 +1,4 @@
-# Colors
+# AwesomeFigures
 
 **Implementation catalogue:** [Complete feature inventory](FEATURES.md)
 ([Sphinx reference](docs/source/features.rst)) lists all 70 current public
@@ -6,7 +6,7 @@ exports and the separate browser, notebook, TeX and automation tools.
 A CI test detects when a new public API symbol has not been documented.
 
 
-`contrastcolors` builds scientific plotting palettes whose **adjacent WCAG
+`awesomefigures` builds scientific plotting palettes whose **adjacent WCAG
 contrast ratios are controlled by construction** while hue can change
 independently. It is designed as a small layer on top of Matplotlib, in the
 same general role that palette helpers play in higher-level plotting libraries.
@@ -30,15 +30,15 @@ Their original HEX coordinates are preserved; they are **not** replaced by
 the luminance-constrained OKLCH generator.
 
 ```python
-import contrastcolors as cc
+import awesomefigures as af
 
-cc.available_named_palettes()
-cc.color_palette("okabe-ito", as_hex=True)
-cc.plot_scheme("tol-high-contrast")
-cc.set_style("elegante", palette="tol-bright", use_tex=False)
+af.available_named_palettes()
+af.color_palette("okabe-ito", as_hex=True)
+af.plot_scheme("tol-high-contrast")
+af.set_style("elegante", palette="tol-bright", use_tex=False)
 
 # Sequential and diverging colormaps for ordered values:
-image = ax.imshow(values, cmap=cc.named_colormap("cividis"))
+image = ax.imshow(values, cmap=af.named_colormap("cividis"))
 ```
 
 Seven exact categorical sets: Okabe–Ito, Paul Tol Bright, High Contrast and
@@ -59,9 +59,9 @@ leaving the curve and its data intact.
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
-import contrastcolors as cc
+import awesomefigures as af
 
-cc.set_style("elegante", font="DejaVu Sans", use_tex=False)
+af.set_style("elegante", font="DejaVu Sans", use_tex=False)
 x = np.linspace(0, 100, 301)
 fig, ax = plt.subplots()
 ax.plot(x, np.sin(x / 17), marker="o")
@@ -71,7 +71,7 @@ fig.savefig("elegant.pdf")
 
 This finishes axes automatically at rendering. Fine-tune tick counts,
 padding, zero inclusion and the minimum marker distance using
-`cc.apply_elegant_axes(ax, target_xticks=6, marker_inset_pt=4)`.
+`af.apply_elegant_axes(ax, target_xticks=6, marker_inset_pt=4)`.
 See the rendered [Styles guide](https://heri-espino.github.io/Colors/style.html)
 for comparisons and technical limitations.
 
@@ -113,7 +113,7 @@ The generated documentation is in
 `docs/_build/html/index.html`, and the notebook outputs are saved in
 `docs/source/notebooks/*.ipynb`.
 
-Launch JupyterLab with `conda run -n contrastcolors jupyter lab`.
+Launch JupyterLab with `conda run -n awesomefigures jupyter lab`.
 
 To publish the Sphinx site, go to GitHub **Settings > Pages**, select
 **GitHub Actions** as the source, and run the manual `pages` workflow.
@@ -166,16 +166,16 @@ Match the real physical widths and nominal body font size of a trusted
 LaTeX document. No PNG screenshots or pixel-based trial and error are needed.
 
 ~~~python
-import contrastcolors as cc
+import awesomefigures as af
 
-with cc.latex_style("paper/main.tex", width="column") as pub:
+with af.latex_style("paper/main.tex", width="column") as pub:
     fig, ax = pub.subplots(height_ratio=0.65)
     ax.plot([0, 1, 2], [1, 3, 2])
     ax.set(xlabel="Time", ylabel="Response")
     print(pub.audit(fig).warnings)
     pub.savefig(fig, "paper/figures/result.pdf")
 
-cc.verify_latex_placement(
+af.verify_latex_placement(
     "paper/main.tex", "paper/figures/result.pdf",
     proof_pdf="paper/figures/result_proof.pdf",
 )
@@ -183,7 +183,7 @@ cc.verify_latex_placement(
 
 Include the saved PDF **without resizing** in LaTeX (plain includegraphics).
 Set width="text" to span both columns. To resize an existing figure, call
-cc.fit_figure_to_latex(fig, cc.inspect_latex("paper/main.tex")).
+af.fit_figure_to_latex(fig, af.inspect_latex("paper/main.tex")).
 
 A suitable TeX engine must be on PATH for inspection or proof compilation.
 If unavailable, pass LatexLayout.from_dimensions(columnwidth_pt=...,
@@ -199,9 +199,9 @@ To reuse the exact TeX fonts without downloading them again, inspect the
 available font information and export a PGF for the manuscript itself to typeset:
 
 ~~~python
-font = cc.find_latex_font("paper/main.tex")
+font = af.find_latex_font("paper/main.tex")
 print(font.tex_font_name, font.metrics_path, font.outline_path)
-with cc.latex_style("paper/main.tex") as pub:
+with af.latex_style("paper/main.tex") as pub:
     fig, ax = pub.subplots()
     ax.plot([0, 1], [1, 2])
     pub.savefig(fig, "paper/figures/figure.pgf")
@@ -220,8 +220,8 @@ linestyles, and repeated scatter groups get distinct markers. Use the
 six-view panel to inspect an entire figure in grayscale, print stress,
 deuteranopia, protanopia and tritanopia, alongside the original:
 
-    cc.show_accessibility_panel(fig)
-    cc.save_accessibility_panel(fig, "accessible.png")
+    af.show_accessibility_panel(fig)
+    af.save_accessibility_panel(fig, "accessible.png")
 
 See the accessibility documentation. Simulations are approximations.
 
@@ -241,9 +241,9 @@ Open the Studio in the Sphinx site or directly at
 **Named palette example:**
 
 ~~~python
-import contrastcolors as cc
+import awesomefigures as af
 
-cc.register_palette(
+af.register_palette(
     "paper_palette",
     hues=[55, 20, 145, 210, 290],
     ratio=1.22,
@@ -252,8 +252,8 @@ cc.register_palette(
     linestyles=["-", "--", ":", "-.", (0, (5, 2))],
 )
 
-colors = cc.color_palette("paper_palette")
-scheme = cc.plot_scheme("paper_palette")
+colors = af.color_palette("paper_palette")
+scheme = af.plot_scheme("paper_palette")
 ~~~
 
 A Python preset registration lasts for the current process. Keep the
@@ -289,9 +289,9 @@ Open docs/_build/html/index.html in a browser.
 For the ordinary case, supply one hue per desired color:
 
 ```python
-import contrastcolors as cc
+import awesomefigures as af
 
-colors = cc.color_palette(
+colors = af.color_palette(
     hues=[55, 20, 145, 210, 290],
     ratio=1.4,
 )
@@ -304,7 +304,7 @@ for y, color in zip(series, colors):
 Use `contrast_palette` when you want diagnostics and metadata:
 
 ```python
-palette = cc.contrast_palette(
+palette = af.contrast_palette(
     hues=[55, 20, 145, 210, 290],
     ratio=1.4,
 )
@@ -320,31 +320,31 @@ The package includes the publication style used by the WTI APO paper:
 
 ~~~python
 import matplotlib.pyplot as plt
-import contrastcolors as cc
+import awesomefigures as af
 
-cc.set_style("heri", font="Arial")
+af.set_style("heri", font="Arial")
 
 fig, ax = plt.subplots()
 ax.plot(x, y)
 ax.set_xlabel(r"$x$")
 ax.set_ylabel(r"$f(x)$")
 
-cc.save_figure(fig, "figure.pdf")
+af.save_figure(fig, "figure.pdf")
 ~~~
 
 The Heri preset matches that repository's publication figures: compact
 white-grid axes, 8--9 pt typography, top/right spines removed, 600-dpi hybrid
 PDF export, Paul Tol categorical colors, and the iridescent continuous map
-available as cc.HERI_CMAP.
+available as af.HERI_CMAP.
 
 The visual style and the font are independent:
 
 ~~~python
-cc.set_style("heri")                   # Utopia when available, STIX fallback
-cc.set_style("heri", font="Arial")
-cc.set_style("heri", font="Helvetica")
-cc.set_style("heri", font="STIX")
-cc.set_style("heri", font="DejaVu Sans")
+af.set_style("heri")                   # Utopia when available, STIX fallback
+af.set_style("heri", font="Arial")
+af.set_style("heri", font="Helvetica")
+af.set_style("heri", font="STIX")
+af.set_style("heri", font="DejaVu Sans")
 ~~~
 
 For arbitrary fonts, use_tex="auto" renders text directly through Matplotlib so
@@ -352,7 +352,7 @@ the requested family is respected. The Utopia preset can use the Wiley-like
 LaTeX stack when it is installed:
 
 ~~~python
-cc.set_style("heri", font="utopia", use_tex=True)
+af.set_style("heri", font="utopia", use_tex=True)
 ~~~
 
 By default, ordinary lines and typography remain vector, while dense artists
@@ -360,13 +360,13 @@ such as scatter plots, heatmaps, filled contours, hexbins and 3D surfaces are
 rasterized inside the PDF. This can be disabled:
 
 ~~~python
-cc.set_style("heri", font="Arial", rasterize=False)
+af.set_style("heri", font="Arial", rasterize=False)
 ~~~
 
 For local use without changing global settings permanently:
 
 ~~~python
-with cc.style_context("heri", font="Arial"):
+with af.style_context("heri", font="Arial"):
     ...
 ~~~
 
@@ -383,7 +383,7 @@ column corresponds to a candidate hue. Therefore any selection of one hue per
 row preserves the prescribed adjacent contrast ratio.
 
 ```python
-grid = cc.contrast_grid(
+grid = af.contrast_grid(
     levels=5,
     hues=[55, 20, 145, 210, 290],
     ratio=1.4,
@@ -396,7 +396,7 @@ grid.plot()
 The Sphinx documentation includes an interactive picker inspired by the
 workflow of tools such as Evil Martians Harmonizer. The picker lets you change
 levels, contrast ratio, hues, chroma, alpha and background, click one candidate
-per row, and copy the resulting `contrastcolors` Python call.
+per row, and copy the resulting `awesomefigures` Python call.
 
 ## Alpha compensation
 
