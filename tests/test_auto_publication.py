@@ -82,7 +82,7 @@ def test_existing_publication_style_is_backward_compatible(measured):
 
 
 def test_batch_preview_width_font_manifest_and_no_fake_exact_claim(tmp_path, measured):
-    with af.publication(measured, style="elegante", strict=False) as pub:
+    with af.paper(measured, style="elegante", strict=False) as pub:
         fig, ax = pub.subplots()
         ax.plot([0, 1, 2], [1, 2, 0], label="A")
         ax.set(xlabel="Time", ylabel="Value")
@@ -107,7 +107,7 @@ def test_batch_preview_width_font_manifest_and_no_fake_exact_claim(tmp_path, mea
 
 
 def test_missing_manuscript_cannot_claim_exact_pdf(tmp_path, measured):
-    with af.publication(measured) as pub:
+    with af.paper(measured) as pub:
         fig, ax = pub.subplots()
         ax.plot([0, 1], [0, 1])
         with pytest.raises(af.PublicationError, match="manuscript"):
@@ -120,7 +120,7 @@ def test_plain_figure_is_fitted_for_manuscript_width(tmp_path, measured):
     fig, ax = plt.subplots(figsize=(8, 4))
     ax.plot([0, 1], [0, 1])
     ax.set_xlabel("A value")
-    with af.publication(measured) as pub:
+    with af.paper(measured) as pub:
         out = pub.savefig(fig, tmp_path / "fitted.pdf", exact=False)
         assert out.exists()
         assert fig.get_size_inches()[0] == pytest.approx(measured.width_inches())
@@ -138,7 +138,7 @@ def test_actionable_missing_tex_error(tmp_path, monkeypatch):
 
 
 def test_strict_mode_rejects_unreadably_small_lines(tmp_path, measured):
-    with af.publication(measured, strict=True) as pub:
+    with af.paper(measured, strict=True) as pub:
         fig, ax = pub.subplots()
         ax.plot([0, 1], [0, 1], linewidth=.01)
         with pytest.raises(af.PublicationError, match="Pre-export"):
@@ -158,7 +158,7 @@ def test_optional_real_tex_pgf_pdf_fonts_and_dimensions(tmp_path):
         "\\end{document}\n",
         encoding="utf-8",
     )
-    with af.publication(tex, strict=True) as pub:
+    with af.paper(tex, strict=True) as pub:
         assert pub.layout.columnwidth_pt < pub.layout.textwidth_pt
         fig, ax = pub.subplots()
         ax.plot([0, 1, 2], [1, 2, 1], label="Series A")
