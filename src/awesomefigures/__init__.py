@@ -41,7 +41,7 @@ from .publication import (
     verify_latex_placement,
 )
 from .auto_publication import (
-    Publication, PublicationError, ExportRecord, publication,
+    Publication, PublicationError, ExportRecord, paper,
     clear_publication_cache,
 )
 from .charts import pie_plot
@@ -78,7 +78,7 @@ __all__ = [
     "Publication",
     "PublicationError",
     "ExportRecord",
-    "publication",
+    "paper",
     "clear_publication_cache",
     "TEX_PT_PER_INCH",
     "LatexLayout",
