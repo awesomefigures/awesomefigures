@@ -326,6 +326,21 @@ class Publication:
             minimum_text_pt=self.minimum_text_pt,
             minimum_line_pt=self.minimum_line_pt,
         )
+        if any("extends beyond" in issue for issue in precheck.warnings):
+            # Small journal columns sometimes need extra vertical breathing
+            # room. Reuse the existing bounded layout fitter; keep point
+            # sizes and original sample arrays unchanged.
+            _legacy.fit_figure_to_latex(
+                fig, self.layout, width=inches,
+                reference_fontsize_pt=self.layout.fontsize_pt,
+                minimum_text_pt=self.minimum_text_pt,
+                max_iterations=4,
+            )
+            precheck = _legacy.audit_figure(
+                fig, self.layout, width=inches,
+                minimum_text_pt=self.minimum_text_pt,
+                minimum_line_pt=self.minimum_line_pt,
+            )
         if self.strict and not precheck.passed:
             raise PublicationError(
                 "Pre-export figure audit failed: " + " ".join(precheck.warnings)
