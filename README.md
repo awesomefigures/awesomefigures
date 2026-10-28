@@ -10,7 +10,7 @@ PNG/SVG and `exact=False` PDFs are explicitly marked as previews.
 ```python
 import awesomefigures as af
 
-with af.publication("paper/main.tex", style="elegante",
+with af.paper("paper/main.tex", style="elegante",
                     palette="okabe-ito", strict=True) as pub:
     fig, ax = pub.subplots()
     ax.plot(saved_x, saved_y, label="Observed trend")
