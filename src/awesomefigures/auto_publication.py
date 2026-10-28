@@ -275,7 +275,7 @@ class Publication:
             raise RuntimeError("Use 'with af.paper(...) as pub:' first.")
         return self._style
 
-    def subplots(self, *, width: str | float | None = None,
+    def subplots(self, *args, width: str | float | None = None,
                  height_ratio: float | None = None, **kwargs):
         """Create final-physical-size axes with TeX-measured font sizes."""
         self._active()
@@ -287,7 +287,7 @@ class Publication:
             raise ValueError("height_ratio must be positive.")
         kwargs.setdefault("figsize", (inches, inches * ratio))
         kwargs.setdefault("layout", "constrained")
-        return plt.subplots(**kwargs)
+        return plt.subplots(*args, **kwargs)
 
 
     def savefig(
