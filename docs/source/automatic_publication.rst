@@ -88,7 +88,7 @@ or manually supplied LatexLayout. The same font family name in Matplotlib
 is **not** proof of matching TeX glyphs.
 
 Windows with MiKTeX / Linux with TeX Live
-----------------------------------------
+-----------------------------------------
 
 .. code-block:: bash
 
@@ -159,17 +159,7 @@ no overlapping labels, publisher compliance, or mathematical correctness.
 Only the TeX-compiled PDF is labelled as exact; previews are explicitly
 labelled approximate.
 
-API
----
+API reference
+-------------
 
-.. autofunction:: awesomefigures.paper
-
-.. autoclass:: awesomefigures.Publication
-   :members: subplots, savefig, report
-
-.. autoclass:: awesomefigures.ExportRecord
-   :members: passed
-
-.. autoclass:: awesomefigures.PublicationError
-
-.. autofunction:: awesomefigures.clear_publication_cache
+See :doc:`api` for the complete documented interface.
