@@ -34,7 +34,7 @@ def main():
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
 
-    with af.publication(args.tex, style="elegante",
+    with af.paper(args.tex, style="elegante",
                         palette="okabe-ito", strict=not args.preview) as pub:
         # First figure at the manuscript's actual column width.
         fig, ax = pub.subplots()
