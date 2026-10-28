@@ -96,6 +96,11 @@ def _pdf_details(path: Path):
                 if name in fonts:
                     continue
                 desc = obj.get("/FontDescriptor")
+                descendants = obj.get("/DescendantFonts")
+                if not desc and descendants:
+                    descendants = descendants.get_object()
+                    if descendants:
+                        desc = descendants[0].get_object().get("/FontDescriptor")
                 desc = desc.get_object() if desc else None
                 fonts[name] = {
                     "name": name,
@@ -377,6 +382,15 @@ class Publication:
                 warnings.append("No PDF font resources detected; cannot verify embedded fonts.")
             if exact and any(not item["embedded"] for item in fonts):
                 warnings.append("One or more PDF fonts are not embedded.")
+        if exact and any(
+            ("MediaBox width" in item or "not embedded" in item or
+             "No PDF font resources" in item)
+            for item in warnings
+        ):
+            raise PublicationError(
+                "Exact TeX PDF geometry/font proof failed: "
+                + " ".join(warnings)
+            )
         if self.strict and warnings:
             raise PublicationError(
                 "Publication export audit failed: " + " ".join(warnings)
