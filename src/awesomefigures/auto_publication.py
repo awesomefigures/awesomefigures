@@ -87,7 +87,9 @@ def _pdf_details(path: Path):
             if resources is None:
                 return
             resources = resources.get_object()
-            for key, ref in (resources.get("/Font") or {}).items():
+            font_resources = resources.get("/Font")
+            font_resources = font_resources.get_object() if font_resources else {}
+            for key, ref in font_resources.items():
                 obj = ref.get_object()
                 # Keys are scoped to a resource dictionary, not globally.
                 name = str(obj.get("/BaseFont", key))
@@ -101,7 +103,9 @@ def _pdf_details(path: Path):
                         desc.get(x) for x in ("/FontFile", "/FontFile2", "/FontFile3")
                     )),
                 }
-            for key, ref in (resources.get("/XObject") or {}).items():
+            images = resources.get("/XObject")
+            images = images.get_object() if images else {}
+            for key, ref in images.items():
                 if id(ref) in visited:
                     continue
                 visited.add(id(ref))
