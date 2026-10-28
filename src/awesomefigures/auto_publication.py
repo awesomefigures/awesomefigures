@@ -266,7 +266,7 @@ class Publication:
 
     def _active(self):
         if self._style is None:
-            raise RuntimeError("Use 'with af.publication(...) as pub:' first.")
+            raise RuntimeError("Use 'with af.paper(...) as pub:' first.")
         return self._style
 
     def subplots(self, *, width: str | float | None = None,
@@ -439,6 +439,6 @@ class Publication:
         return path
 
 
-def publication(latex: str | Path | _legacy.LatexLayout, **kwargs) -> Publication:
+def paper(latex: str | Path | _legacy.LatexLayout, **kwargs) -> Publication:
     """Return a cached document-aware publication context (use with)."""
     return Publication(latex, **kwargs)
