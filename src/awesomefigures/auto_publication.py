@@ -119,3 +119,71 @@ def _pdf_details(path: Path):
         raise PublicationError(f"Could not inspect PDF {path}: {exc}") from exc
 
 
+def _compile_exact_pdf(pgf: Path, pdf: Path, manuscript: Path,
+                       engine: str, timeout: int) -> None:
+    """Compile PGF with the manuscript's preamble, using preview.sty cropping.
+
+    This supports TeX-owned font glyphs without guessing system font files.
+    PDF physical dimensions are checked independently after compiling.
+    """
+    if shutil.which(engine) is None:
+        raise PublicationError(
+            f"{engine} was not found. Install MiKTeX on Windows or TeX Live "
+            "on Linux, including PGF and preview.sty. No substitute-font "
+            "PDF has been written. For a draft, use exact=False."
+        )
+    try:
+        preamble = _legacy._latex_preamble(
+            manuscript.read_text(encoding="utf-8-sig")
+        )
+        location = pgf.resolve().as_posix()
+        tex = (
+            preamble + "\n"
+            + r"\usepackage[active,tightpage]{preview}" + "\n"
+            + r"\PreviewBorder=0pt" + "\n"
+            + r"\begin{document}" + "\n"
+            + r"\thispagestyle{empty}" + "\n"
+            + r"\begin{preview}" + "\n"
+            + r"\noindent\input{" + location + "}" + "\n"
+            + r"\end{preview}" + "\n"
+            + r"\end{document}" + "\n"
+        )
+        _legacy._run_tex(
+            tex, source_dir=manuscript.parent, engine=engine,
+            timeout=timeout, output_pdf=pdf,
+        )
+    except _legacy.LatexProbeError as exc:
+        message = str(exc)
+        match = re.search(r"([A-Za-z0-9_./-]+\.(?:sty|cls|def|tfm)).*not found", message)
+        hint = (
+            f"Missing TeX resource {match.group(1)}. Install it in MiKTeX "
+            "Console or via the TeX Live package manager."
+            if match else
+            "Inspect the reported TeX log for missing packages, classes, "
+            "fonts, or auxiliary assets."
+        )
+        raise PublicationError(
+            f"Exact publication PDF compilation failed for {manuscript}. "
+            + hint + "\n" + message
+        ) from exc
+
+
+@dataclass(frozen=True)
+class ExportRecord:
+    """Auditable export of a figure; source data is never recomputed."""
+
+    path: str
+    format: str
+    typography: str
+    width_spec: str
+    expected_width_tex_pt: float
+    actual_width_tex_pt: float | None
+    pdf_fonts: tuple[dict, ...]
+    warnings: tuple[str, ...]
+    sha256: str
+
+    @property
+    def passed(self) -> bool:
+        return not self.warnings
+
+
