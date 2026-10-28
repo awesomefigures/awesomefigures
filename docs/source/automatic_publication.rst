@@ -14,7 +14,7 @@ Quick start
 
    import awesomefigures as af
 
-   with af.publication("paper/main.tex", style="elegante",
+   with af.paper("paper/main.tex", style="elegante",
                        palette="okabe-ito", strict=True) as pub:
        fig, ax = pub.subplots()
        ax.plot(saved_x, saved_y, label="Trend")
@@ -48,7 +48,7 @@ Multi-panel and two-column figures
 
 .. code-block:: python
 
-   with af.publication("paper/main.tex", width="full",
+   with af.paper("paper/main.tex", width="full",
                        palette="tol-bright") as pub:
        fig, axes = pub.subplots(2, 2, height_ratio=0.60)
        for ax, series in zip(axes.flat, archived_series):
@@ -76,7 +76,7 @@ permits a Matplotlib preview PDF. The JSON manifest records either
 
 .. code-block:: python
 
-   with af.publication("paper/main.tex") as pub:
+   with af.paper("paper/main.tex") as pub:
        fig, ax = pub.subplots()
        ax.plot(saved_x, saved_y)
        pub.savefig(fig, "paper/figures/preview.svg")
@@ -139,7 +139,7 @@ TeX-backed PDF compilation and reports:
 
 .. code-block:: python
 
-   with af.publication("paper/main.tex", strict=True) as pub:
+   with af.paper("paper/main.tex", strict=True) as pub:
        fig, ax = pub.subplots()
        pub.savefig(fig, "figures/new.pdf")
        pub.report("figures/report.json")
@@ -162,7 +162,7 @@ labelled approximate.
 API
 ---
 
-.. autofunction:: awesomefigures.publication
+.. autofunction:: awesomefigures.paper
 
 .. autoclass:: awesomefigures.Publication
    :members: subplots, savefig, report
