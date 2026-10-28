@@ -76,7 +76,7 @@ audits. Every batch gets a JSON and Markdown manifest. The API accepts
 already-computed figures and never runs statistical experiments. The
 :doc:`automatic_publication` guide explains limitations and installation.
 
-**Public exports:** ``Publication``, ``publication``,
+**Public exports:** ``Publication``, ``paper``,
 ``PublicationError``, ``ExportRecord``, ``clear_publication_cache``.
 
 Matplotlib styling and exports
