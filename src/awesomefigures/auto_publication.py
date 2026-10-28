@@ -279,3 +279,162 @@ class Publication:
         kwargs.setdefault("layout", "constrained")
         return plt.subplots(**kwargs)
 
+
+    def savefig(
+        self, fig, filename: str | Path, *,
+        width: str | float | None = None,
+        exact: bool | None = None,
+        dpi: int = 200,
+    ) -> Path:
+        """Export existing figure; never rerun any estimator or data pipeline.
+
+        An exact PDF is typeset by the manuscript's actual TeX preamble. An
+        SVG/PNG or exact=False PDF is a preview with approximate font identity.
+        Both modes retain the intended physical figure width.
+        """
+        self._active()
+        target = Path(filename).expanduser().resolve()
+        if not target.suffix:
+            target = target.with_suffix(".pdf")
+        suffix = target.suffix.lower()
+        if suffix not in (".pdf", ".svg", ".png"):
+            raise ValueError("Formats must be PDF, SVG, or PNG.")
+        desired = self.width if width is None else width
+        inches = _resolve_width(self.layout, desired)
+        exact = suffix == ".pdf" if exact is None else bool(exact)
+        if exact and suffix != ".pdf":
+            raise ValueError("Exact LaTeX typography is supported only for PDF.")
+        if exact and self.manuscript is None:
+            raise PublicationError(
+                "Exact PDF requires a LaTeX manuscript path. "
+                "Manual dimensions allow exact=False preview only."
+            )
+        # Fit existing Matplotlib figures at export only if needed. Sizes are
+        # computed from immutable axes data; model computation is not invoked.
+        if abs(fig.get_size_inches()[0] - inches) > 0.0001:
+            _legacy.fit_figure_to_latex(
+                fig, self.layout, width=inches,
+                minimum_text_pt=self.minimum_text_pt,
+                reference_fontsize_pt=self.layout.fontsize_pt,
+            )
+        precheck = _legacy.audit_figure(
+            fig, self.layout, width=inches,
+            minimum_text_pt=self.minimum_text_pt,
+            minimum_line_pt=self.minimum_line_pt,
+        )
+        if self.strict and not precheck.passed:
+            raise PublicationError(
+                "Pre-export figure audit failed: " + " ".join(precheck.warnings)
+            )
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if exact:
+            # PGF is the reproducible TeX-native intermediate. Keep it by the
+            # figure PDF; never silently substitute a Matplotlib PDF.
+            pgf = target.with_suffix(".pgf")
+            self._active().savefig_pgf(fig, pgf)
+            _compile_exact_pdf(
+                pgf, target, self.manuscript, self.engine, self.timeout
+            )
+            typography = "exact-tex-preamble"
+        else:
+            self._active().savefig(fig, target, audit=False, dpi=dpi)
+            typography = "preview-matplotlib"
+        if not target.is_file() or target.stat().st_size == 0:
+            raise PublicationError(f"Export missing or empty: {target}")
+        warnings = list(precheck.warnings)
+        fonts = []
+        actual = None
+        if suffix == ".pdf":
+            width_pdf_pt, _, fonts = _pdf_details(target)
+            # PDF uses 72 PostScript points per inch; TeX uses 72.27.
+            actual = width_pdf_pt * _legacy.TEX_PT_PER_INCH / 72.0
+            expected_pdf_pt = inches * 72.0
+            if abs(width_pdf_pt - expected_pdf_pt) > 0.75:
+                warnings.append(
+                    f"PDF MediaBox width {width_pdf_pt:.2f} PostScript points "
+                    f"differs from expected {expected_pdf_pt:.2f} points."
+                )
+            if exact and not fonts:
+                warnings.append("No PDF font resources detected; cannot verify embedded fonts.")
+            if exact and any(not item["embedded"] for item in fonts):
+                warnings.append("One or more PDF fonts are not embedded.")
+        if self.strict and warnings:
+            raise PublicationError(
+                "Publication export audit failed: " + " ".join(warnings)
+            )
+        self.records.append(ExportRecord(
+            path=str(target), format=suffix[1:], typography=typography,
+            width_spec=str(desired),
+            expected_width_tex_pt=inches * _legacy.TEX_PT_PER_INCH,
+            actual_width_tex_pt=actual, pdf_fonts=tuple(fonts),
+            warnings=tuple(warnings),
+            sha256=hashlib.sha256(target.read_bytes()).hexdigest(),
+        ))
+        return target
+
+    def report(self, filename: str | Path) -> Path:
+        """Write a machine-readable JSON manifest and Markdown review table."""
+        path = Path(filename)
+        if path.suffix.lower() != ".json":
+            path = path.with_suffix(".json")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        manifest = {
+            "schema_version": 1,
+            "manuscript": str(self.manuscript) if self.manuscript else None,
+            "manuscript_sha256": self.source_hash,
+            "engine": self.engine,
+            "style": self.style,
+            "palette": self.palette,
+            "layout": asdict(self.layout),
+            "figure_count": len(self.records),
+            "all_passed": all(record.passed for record in self.records),
+            "figures": [asdict(record) for record in self.records],
+            "limitations": (
+                "Text clipping checks are approximate, and fonts must be "
+                "verified visually in the final manuscript. "
+                "The TeX cache is invalidated automatically by main-source "
+                "changes; call clear_publication_cache() after modifying "
+                "an included class/style file."
+            ),
+        }
+        path.write_text(
+            json.dumps(manifest, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        lines = [
+            "# AwesomeFigures publication report", "",
+            f"Manuscript: {manifest['manuscript'] or '(manual dimensions)'}",
+            f"Exports: {len(self.records)}",
+            f"All passed: {manifest['all_passed']}", "",
+            "| Figure | Typography | Width (TeX pt) | Audit |",
+            "| --- | --- | ---: | --- |",
+        ]
+        for record in self.records:
+            actual = (
+                f"{record.actual_width_tex_pt:.2f}"
+                if record.actual_width_tex_pt is not None else "preview"
+            )
+            status = "PASS" if record.passed else "REVIEW"
+            lines.append(
+                f"| {Path(record.path).name} | {record.typography} "
+                f"| {actual} | {status} |"
+            )
+            for issue in record.warnings:
+                lines.append(f"\n- {Path(record.path).name}: {issue}")
+        lines += [
+            "", "Automated checks cannot guarantee a perfect visual layout, "
+            "scientific correctness, or journal acceptance.", "",
+        ]
+        path.with_suffix(".md").write_text(
+            "\n".join(lines), encoding="utf-8"
+        )
+        if self.strict and not manifest["all_passed"]:
+            raise PublicationError(
+                "Strict publication report contains failed figure audits."
+            )
+        return path
+
+
+def publication(latex: str | Path | _legacy.LatexLayout, **kwargs) -> Publication:
+    """Return a cached document-aware publication context (use with)."""
+    return Publication(latex, **kwargs)
