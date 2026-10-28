@@ -7,7 +7,7 @@ helpers intended for advanced use.
 Automatic publication from manuscripts
 --------------------------------------
 
-.. autofunction:: awesomefigures.publication
+.. autofunction:: awesomefigures.paper
 
 .. autoclass:: awesomefigures.Publication
    :members: subplots, savefig, report
