@@ -299,6 +299,12 @@ Explore next
       Documented Python API exports, Studio methods, notebook demos,
       TeX publication tools and workflow scripts.
 
+   .. grid-item-card:: Automatic publication integration
+      :link: automatic_publication
+      :link-type: doc
+
+      Generate TeX-font PDFs, validate embedded fonts and produce batch manifests.
+
    .. grid-item-card:: LaTeX publication figures
       :link: publication
       :link-type: doc
@@ -329,6 +335,7 @@ Explore next
    studio
    accessibility
    publication
+   automatic_publication
    publication_demo
    features
    customization
