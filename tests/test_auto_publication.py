@@ -51,7 +51,7 @@ def test_width_vocabulary_and_explicit_inches(measured):
 
 def test_probe_is_cached_and_invalidated_by_document_text(tmp_path, monkeypatch, measured):
     tex = tmp_path / "main.tex"
-    tex.write_text("\\documentclass{article}\\n\\begin{document}\\n", encoding="utf-8")
+    tex.write_text("\\documentclass{article}\n\\begin{document}\n", encoding="utf-8")
     invoked = []
     def inspect(path, *, engine, timeout):
         invoked.append((path, engine, timeout))
@@ -131,7 +131,7 @@ def test_actionable_missing_tex_error(tmp_path, monkeypatch):
     pgf = tmp_path / "plot.pgf"
     pgf.write_text("test", encoding="utf-8")
     tex = tmp_path / "main.tex"
-    tex.write_text("\\documentclass{article}\\n\\begin{document}", encoding="utf-8")
+    tex.write_text("\\documentclass{article}\n\\begin{document}", encoding="utf-8")
     monkeypatch.setattr(auto.shutil, "which", lambda exe: None)
     with pytest.raises(af.PublicationError, match="MiKTeX"):
         auto._compile_exact_pdf(pgf, tmp_path / "result.pdf", tex, "pdflatex", 15)
