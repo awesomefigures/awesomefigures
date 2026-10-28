@@ -148,6 +148,7 @@ def _compile_exact_pdf(pgf: Path, pdf: Path, manuscript: Path,
         location = pgf.resolve().as_posix()
         tex = (
             preamble + "\n"
+            + r"\usepackage{pgf}" + "\n"
             + r"\usepackage[active,tightpage]{preview}" + "\n"
             + r"\PreviewBorder=0pt" + "\n"
             + r"\begin{document}" + "\n"
