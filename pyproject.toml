@@ -39,6 +39,7 @@ docs = [
   "ipykernel>=6",
 ]
 notebooks = ["jupyterlab>=4"]
+publication = ["pypdf>=4"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
