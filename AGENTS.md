@@ -12,7 +12,7 @@ private manuscripts.
 
 - Preserve the existing `inspect_latex`, `latex_style`,
   `PublicationStyle.fit/audit/savefig`, and PGF APIs.
-- The high-level `publication` context lives in
+- The high-level `paper` context lives in
   `src/awesomefigures/auto_publication.py` and orchestrates those lower
   layers; avoid implementing a second independent layout probe.
 - The .tex input must be a **trusted preamble**. Never execute arbitrary
