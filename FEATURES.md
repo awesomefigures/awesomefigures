@@ -8,7 +8,7 @@ interactive/reproducibility features is:
 - [Interactive Palette & Plot Studio](https://heri-espino.github.io/Colors/studio.html)
 - [Reproducible two-column LaTeX technical presentation](examples/latex_publication/README.md)
 
-The inventory has **70 public exported names** in the current
+The inventory has **75 public exported names** in the current
 `src/awesomefigures/__init__.py`. The test suite checks that every exported
 name is documented by the catalog, so API additions cannot silently disappear
 from the feature list.

@@ -4,6 +4,21 @@ API reference
 This reference documents the public API first, followed by lower-level module
 helpers intended for advanced use.
 
+Automatic publication from manuscripts
+--------------------------------------
+
+.. autofunction:: awesomefigures.paper
+
+.. autoclass:: awesomefigures.Publication
+   :members: subplots, savefig, report
+
+.. autoclass:: awesomefigures.ExportRecord
+   :members: passed
+
+.. autoclass:: awesomefigures.PublicationError
+
+.. autofunction:: awesomefigures.clear_publication_cache
+
 High-level palette API
 ----------------------
 

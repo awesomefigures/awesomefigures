@@ -66,6 +66,19 @@ Convert Matplotlib/RGB colors, calculate relative luminance and WCAG contrast of
 
 **Public exports:** ``to_rgb``, ``to_hex``, ``relative_luminance``, ``contrast_ratio``, ``srgb_to_oklab``, ``delta_e_ok``.
 
+Automated journal publication and batch reports
+-----------------------------------------------
+
+Document-aware publication extends existing LaTeX inspection and PGF APIs.
+One context caches manuscript measurements and exports PDF (TeX-exact by
+default), SVG or PNG previews with physical-width, embedded-font and text
+audits. Every batch gets a JSON and Markdown manifest. The API accepts
+already-computed figures and never runs statistical experiments. The
+:doc:`automatic_publication` guide explains limitations and installation.
+
+**Public exports:** ``Publication``, ``paper``,
+``PublicationError``, ``ExportRecord``, ``clear_publication_cache``.
+
 Matplotlib styling and exports
 ------------------------------
 

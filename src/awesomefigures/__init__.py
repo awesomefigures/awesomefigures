@@ -40,6 +40,10 @@ from .publication import (
     fit_figure_to_latex,
     verify_latex_placement,
 )
+from .auto_publication import (
+    Publication, PublicationError, ExportRecord, paper,
+    clear_publication_cache,
+)
 from .charts import pie_plot
 from .named_palettes import (
     NamedPalette,
@@ -71,6 +75,11 @@ from .palette import (
 )
 
 __all__ = [
+    "Publication",
+    "PublicationError",
+    "ExportRecord",
+    "paper",
+    "clear_publication_cache",
     "TEX_PT_PER_INCH",
     "LatexLayout",
     "LatexProbeError",

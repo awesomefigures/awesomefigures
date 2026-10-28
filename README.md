@@ -1,5 +1,30 @@
 # AwesomeFigures
 
+## Automatic LaTeX publication from an existing figure
+
+Configure a trusted manuscript once; your already-computed figures inherit
+its measured physical dimensions and body typography. PDF export compiles PGF
+through the manuscript's real TeX preamble and inspects embedded PDF fonts.
+PNG/SVG and `exact=False` PDFs are explicitly marked as previews.
+
+```python
+import awesomefigures as af
+
+with af.paper("paper/main.tex", style="elegante",
+                    palette="okabe-ito", strict=True) as pub:
+    fig, ax = pub.subplots()
+    ax.plot(saved_x, saved_y, label="Observed trend")
+    pub.savefig(fig, "paper/figures/trend.pdf", width="column")
+    pub.report("paper/figures/manifest.json")
+```
+
+Install PDF auditing separately with `python -m pip install -e ".[publication]"`.
+The core plotting installation still has no TeX or PDF-auditing dependencies.
+See the [automatic publication guide](docs/source/automatic_publication.rst)
+and [deterministic batch example](examples/automatic_publication/).
+This API never reruns statistical experiments.
+
+
 **Distribution:** `awesomefigures` · **Python import:** `import awesomefigures as af`
 
 ```python

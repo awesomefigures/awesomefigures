@@ -634,6 +634,8 @@ def latex_style(
     height_ratio: float = 0.65,
     minimum_text_pt: float = 7.0,
     rasterize: bool = True,
+    style: Literal["heri", "elegante"] = "heri",
+    palette: str = "print-safe",
     axis_label_scale: float = 1.0,
     axis_label_weight: str = "normal",
     timeout: int = 60,
@@ -660,7 +662,7 @@ def latex_style(
         family = "sans-serif" if code.startswith(("phv", "lmss", "cmss", "qhv")) else "serif"
     else:
         family = font
-    with style_context("heri", font=family, use_tex=False, rasterize=rasterize):
+    with style_context(style, palette=palette, font=family, use_tex=False, rasterize=rasterize):
         mpl.rcParams.update({
             "font.size": layout.fontsize_pt,
             "font.weight": "normal",
